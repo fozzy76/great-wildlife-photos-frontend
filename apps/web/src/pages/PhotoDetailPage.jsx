@@ -297,7 +297,7 @@ const PhotoDetailPage = () => {
 
                 {justAdded && (
                   <Button
-                    onClick={() => navigate('/cart')}
+                    onClick={() => navigate('/checkout')}
                     size="lg"
                     className="w-full bg-green-600 text-white hover:bg-green-700"
                   >
