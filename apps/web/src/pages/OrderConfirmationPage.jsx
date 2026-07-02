@@ -115,7 +115,7 @@ const OrderConfirmationPage = () => {
               </div>
               <div>
                 <h2 className="text-sm font-semibold text-muted-foreground mb-2">Total</h2>
-                <p className="text-2xl font-bold text-primary">${order.total?.toFixed(2) || '0.00'}</p>
+                <p className="text-2xl font-bold text-primary">${Number(order.total || 0).toFixed(2)}</p>
               </div>
             </div>
 
