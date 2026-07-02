@@ -21,10 +21,10 @@ const OrderConfirmationPage = () => {
       try {
         const response = await fetch('https://api.greatwildlifephotos.com/checkout/orders/' + paymentIntentId);
         if (!response.ok) {
-          if (response.status === 404 && retryCount < 5) {
+          if (response.status === 404 && retryCount < 10) {
             // Order may not be saved yet — Stripe webhook still processing
             // Don't setLoading(false) — keep showing skeleton during retries
-            setTimeout(() => fetchOrder(retryCount + 1), 1500);
+            setTimeout(() => fetchOrder(retryCount + 1), 2000);
             return;
           }
           console.error('Order fetch failed:', response.status);
