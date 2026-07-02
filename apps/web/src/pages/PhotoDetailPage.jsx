@@ -142,8 +142,60 @@ const PhotoDetailPage = () => {
 
   if (!photo || !variants) return null;
 
-  const selectedVariant = getSelectedVariant();
   const materials = Object.keys(variants);
+  const selectedVariant = getSelectedVariant();
+
+  // No compatible print sizes for this photo's resolution/aspect ratio
+  if (materials.length === 0) {
+    return (
+      <>
+        <Helmet>
+          <title>{`${photo.title} - Great Wildlife Photos`}</title>
+          <meta name="description" content={photo.description || `Premium ${photo.category} wildlife photography print by Lynn Starnes.`} />
+          <meta property="og:image" content={photo.r2_url || photo.photo_url} />
+          <meta property="og:title" content={`${photo.title} - Great Wildlife Photos`} />
+          <meta property="og:type" content="product" />
+        </Helmet>
+        <div className="min-h-screen bg-background py-12">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <Button variant="ghost" onClick={() => navigate('/gallery')} className="my-4 mb-8">
+              <ArrowLeft className="mr-2 w-4 h-4" />
+              Back to gallery
+            </Button>
+            <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
+              <div className="lg:col-span-3">
+                <div className="relative overflow-hidden shadow-xl" style={{ height: '520px', objectFit: 'cover', borderRadius: '16px' }}>
+                  <img
+                    src={`https://api.greatwildlifephotos.com/image-proxy?url=${encodeURIComponent(photo?.r2_url || photo?.photo_url)}`}
+                    alt={`${photo?.title} - Fine art wildlife photography print by Lynn Starnes`}
+                    className="w-full h-full object-cover"
+                    crossOrigin="anonymous"
+                  />
+                </div>
+              </div>
+              <div className="lg:col-span-2 space-y-6">
+                <div>
+                  <p className="text-sm font-medium text-primary mb-2">{photo.category}</p>
+                  <h1 className="text-4xl font-bold mb-4">{photo.title}</h1>
+                </div>
+                {photo.description && (
+                  <div>
+                    <h2 className="text-lg font-semibold mb-2">Description</h2>
+                    <p className="text-muted-foreground leading-relaxed">{photo.description}</p>
+                  </div>
+                )}
+                <div className="rounded-lg p-6 text-center" style={{ border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)' }}>
+                  <p className="text-lg font-semibold mb-2">Print sizing in progress</p>
+                  <p className="text-sm text-muted-foreground">This photograph is currently being prepared for print production. Please check back soon or contact us at lynn@greatwildlifephotos.com for custom sizing options.</p>
+                  <Button variant="outline" className="mt-4" onClick={() => navigate('/contact')}>Contact us</Button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
   const finalPrice = getFinalPrice(selectedVariant);
 
   return (
