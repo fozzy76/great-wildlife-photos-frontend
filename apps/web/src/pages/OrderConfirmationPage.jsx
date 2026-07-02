@@ -48,6 +48,11 @@ const OrderConfirmationPage = () => {
     return (
       <div className="min-h-screen bg-background py-12">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-8">
+            <div className="inline-block w-10 h-10 border-2 border-primary border-t-transparent rounded-full animate-spin mb-4" />
+            <h2 className="text-xl font-semibold text-muted-foreground">Processing your order...</h2>
+            <p className="text-sm text-muted-foreground mt-2">Please wait while we confirm your payment with our printing partner.</p>
+          </div>
           <Skeleton className="h-12 w-3/4 mb-8" />
           <Skeleton className="h-64 w-full" />
         </div>
