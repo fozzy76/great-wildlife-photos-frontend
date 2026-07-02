@@ -10,7 +10,6 @@ import CartPage from '@/pages/CartPage.jsx';
 import CheckoutPage from '@/pages/CheckoutPage.jsx';
 import OrderReceiptPage from '@/pages/OrderReceiptPage.jsx';
 import OrderConfirmationPage from '@/pages/OrderConfirmationPage.jsx';
-import OrderReceiptPage from '@/pages/OrderReceiptPage.jsx';
 import ContactPage from '@/pages/ContactPage.jsx';
 import AboutPage from '@/pages/AboutPage.jsx';
 import FAQPage from '@/pages/FAQPage.jsx';
