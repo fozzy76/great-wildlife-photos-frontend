@@ -1,11 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { useSearchParams, Link, useNavigate } from 'react-router-dom';
+import { useSearchParams, Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.jsx';
 
 const OrderReceiptPage = () => {
   const [searchParams] = useSearchParams();
   const paymentIntentId = searchParams.get('payment_intent');
-  const navigate = useNavigate();
   const [order, setOrder] = useState(null);
   const [orderItems, setOrderItems] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -66,7 +65,7 @@ const OrderReceiptPage = () => {
         <Button
           variant="outline"
           size="sm"
-          onClick={() => navigate(-1)}
+          onClick={() => window.close()}
           style={{ background: '#fff', border: '1px solid #ccc' }}
         >
           ✕ Close
