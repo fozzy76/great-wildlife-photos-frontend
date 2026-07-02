@@ -10,6 +10,7 @@ import CartPage from '@/pages/CartPage.jsx';
 import CheckoutPage from '@/pages/CheckoutPage.jsx';
 import OrderReceiptPage from '@/pages/OrderReceiptPage.jsx';
 import OrderConfirmationPage from '@/pages/OrderConfirmationPage.jsx';
+import OrderReceiptPage from '@/pages/OrderReceiptPage.jsx';
 import ContactPage from '@/pages/ContactPage.jsx';
 import AboutPage from '@/pages/AboutPage.jsx';
 import FAQPage from '@/pages/FAQPage.jsx';
@@ -29,6 +30,8 @@ function App() {
           <ScrollToTop />
           <Toaster richColors position="bottom-right" />
           <Routes>
+            {/* Standalone routes (no header/footer) */}
+            <Route path="/order-receipt" element={<OrderReceiptPage />} />
             {/* Customer Routes */}
             <Route path="*" element={
               <div className="flex flex-col min-h-screen">

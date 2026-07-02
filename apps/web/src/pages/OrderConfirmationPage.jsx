@@ -219,7 +219,7 @@ const OrderConfirmationPage = () => {
               size="lg"
               className="transition-all duration-200"
             >
-              <Link to={`/order-receipt?payment_intent=${paymentIntentId}`}>Print Receipt</Link>
+              <a href={`/order-receipt?payment_intent=${paymentIntentId}`} target="_blank" rel="noopener noreferrer">Print Receipt</a>
             </Button>
           </div>
         </div>
