@@ -1,13 +1,15 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import SEO from '@/components/SEO.jsx';
 
 export default function TermsPage() {
   return (
     <div className="min-h-screen bg-background py-16 px-4 sm:px-6 lg:px-8">
-      <Helmet>
-        <title>{`Terms of Service | Lynn Starnes Photography`}</title>
-        <meta name="description" content="Terms of Service and conditions for purchasing fine art prints." />
-      </Helmet>
+      <SEO
+        title="Terms of Service | Great Wildlife Photos"
+        description="Terms of service and purchase conditions for Great Wildlife Photos fine art wildlife prints."
+        path="/terms"
+        robots="noindex,follow"
+      />
       
       <div className="max-w-3xl mx-auto">
         <h1 className="text-4xl font-extrabold tracking-tight text-foreground mb-2">

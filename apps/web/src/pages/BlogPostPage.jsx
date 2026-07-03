@@ -1,10 +1,11 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft } from 'lucide-react';
 import { blogPosts } from '@/data/blogPosts.js';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
+import SEO from '@/components/SEO.jsx';
+import { articleSchema, baseGraph, breadcrumbSchema, webPageSchema } from '@/lib/seo.js';
 
 const BlogPostPage = () => {
   const { slug } = useParams();
@@ -22,15 +23,33 @@ const BlogPostPage = () => {
     );
   }
 
+  const canonicalPath = `/blog/${post.slug}`;
+
   return (
     <>
-      <Helmet>
-        <title>{`${post.title} | Great Wildlife Photos Blog`}</title>
-        <meta name="description" content={post.excerpt} />
-        <meta property="og:title" content={post.title} />
-        <meta property="og:description" content={post.excerpt} />
-        <meta property="og:image" content={post.coverImage} />
-      </Helmet>
+      <SEO
+        title={`${post.title} | Great Wildlife Photos Blog`}
+        description={post.excerpt}
+        path={canonicalPath}
+        image={post.coverImage}
+        type="article"
+        schema={[
+          ...baseGraph(),
+          webPageSchema({
+            path: canonicalPath,
+            name: post.title,
+            description: post.excerpt,
+            type: 'BlogPosting',
+            image: post.coverImage
+          }),
+          articleSchema({ post, path: canonicalPath }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Blog', path: '/blog' },
+            { name: post.title, path: canonicalPath }
+          ])
+        ]}
+      />
 
       <div className="min-h-screen bg-background pt-24 pb-16">
         <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">

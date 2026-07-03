@@ -1,16 +1,33 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { ArrowRight } from 'lucide-react';
 import { blogPosts } from '@/data/blogPosts.js';
+import SEO from '@/components/SEO.jsx';
+import { DEFAULT_SEO_IMAGE, baseGraph, breadcrumbSchema, webPageSchema } from '@/lib/seo.js';
 
 const BlogPage = () => {
   return (
     <>
-      <Helmet>
-        <title>From the Field - Wildlife Photography Blog | Great Wildlife Photos</title>
-        <meta name="description" content="Stories, guides, and moments from wildlife photographer Lynn Starnes." />
-      </Helmet>
+      <SEO
+        title="From the Field - Wildlife Photography Blog | Great Wildlife Photos"
+        description="Stories, print buying guides, and field notes from award-winning wildlife photographer Lynn Starnes."
+        path="/blog"
+        image={DEFAULT_SEO_IMAGE}
+        schema={[
+          ...baseGraph(),
+          webPageSchema({
+            path: '/blog',
+            name: 'From the Field',
+            description: 'Stories, print buying guides, and field notes from Lynn Starnes.',
+            type: 'Blog',
+            image: DEFAULT_SEO_IMAGE
+          }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Blog', path: '/blog' }
+          ])
+        ]}
+      />
 
       <div className="min-h-screen bg-background pt-24 pb-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">

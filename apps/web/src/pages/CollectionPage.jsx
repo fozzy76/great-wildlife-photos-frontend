@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import pb from '@/lib/pocketbaseClient';
 import AsyncProductImage from '@/components/AsyncProductImage.jsx';
 import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import SEO from '@/components/SEO.jsx';
 
 const CollectionPage = () => {
   const [collections, setCollections] = useState([]);
@@ -59,9 +59,7 @@ const CollectionPage = () => {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
-        <Helmet>
-          <title>Collections | Fine Art Wildlife</title>
-        </Helmet>
+        <SEO title="Collections | Great Wildlife Photos" description="Curated wildlife photography print collections by Lynn Starnes." path="/collections" />
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
         <p className="text-muted-foreground animate-pulse">Curating collections...</p>
       </div>
@@ -71,9 +69,7 @@ const CollectionPage = () => {
   if (error) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
-        <Helmet>
-          <title>Error | Fine Art Wildlife</title>
-        </Helmet>
+        <SEO title="Collections | Great Wildlife Photos" description="Curated wildlife photography print collections by Lynn Starnes." path="/collections" robots="noindex,follow" />
         <AlertCircle className="h-12 w-12 text-destructive mb-4" />
         <h1 className="text-3xl font-serif font-bold mb-2">Unable to Load Collections</h1>
         <p className="text-muted-foreground mb-8 max-w-md">{error}</p>
@@ -87,10 +83,7 @@ const CollectionPage = () => {
 
   return (
     <main className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <Helmet>
-        <title>Collections | Fine Art Wildlife</title>
-        <meta name="description" content="Explore our diverse collections of fine art wildlife photography." />
-      </Helmet>
+      <SEO title="Collections | Great Wildlife Photos" description="Explore curated fine art wildlife photography collections by Lynn Starnes." path="/collections" />
 
       <div className="mb-16 text-center max-w-3xl mx-auto">
         <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-balance tracking-tight mb-6">

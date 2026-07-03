@@ -1,5 +1,4 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { Link, useSearchParams } from 'react-router-dom';
 import { ChevronLeft, ChevronRight, Search, X } from 'lucide-react';
 import { Button } from '@/components/ui/button.jsx';
@@ -7,9 +6,10 @@ import { Input } from '@/components/ui/input.jsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.jsx';
 import { Skeleton } from '@/components/ui/skeleton.jsx';
 import { cn } from '@/lib/utils.js';
+import SEO from '@/components/SEO.jsx';
+import { DEFAULT_SEO_IMAGE, SITE_URL, baseGraph, breadcrumbSchema, webPageSchema } from '@/lib/seo.js';
 
 const API_BASE = 'https://api.greatwildlifephotos.com';
-const SITE_URL = 'https://greatwildlifephotos.com';
 const PAGE_SIZE = 24;
 
 const sortOptions = [
@@ -199,7 +199,6 @@ const GalleryPage = () => {
   };
 
   const canonicalPath = searchFromUrl ? buildGalleryPath({ q: null, page: 1 }) : buildGalleryPath();
-  const canonicalUrl = SITE_URL + canonicalPath;
   const previousUrl = hasPreviousPage ? SITE_URL + buildGalleryPath({ page: pageFromUrl - 1 }) : null;
   const nextUrl = hasNextPage ? SITE_URL + buildGalleryPath({ page: pageFromUrl + 1 }) : null;
   const pageTitleParts = [
@@ -207,25 +206,37 @@ const GalleryPage = () => {
     pageFromUrl > 1 ? `Page ${pageFromUrl}` : null,
     'Great Wildlife Photos'
   ].filter(Boolean);
+  const pageTitle = pageTitleParts.join(' | ');
+  const pageDescription = categoryFromUrl !== 'all'
+    ? `Browse ${categoryFromUrl} wildlife photography prints by Lynn Starnes. Shop museum-quality canvas, metal, and acrylic fine art prints.`
+    : 'Browse award-winning North American wildlife photography prints by Lynn Starnes. Filter fine art prints by subject and shop canvas, metal, and acrylic options.';
 
   return (
     <>
-      <Helmet>
-        <title>{pageTitleParts.join(' | ')}</title>
-        <meta name="description" content="Browse award-winning North American wildlife photography prints by Lynn Starnes. Filter fine art prints by subject, search the gallery, and shop canvas, metal, and acrylic options." />
-        <meta name="robots" content={searchFromUrl ? 'noindex,follow' : 'index,follow'} />
-        <link rel="canonical" href={canonicalUrl} />
+      <SEO
+        title={pageTitle}
+        description={pageDescription}
+        path={canonicalPath}
+        image={DEFAULT_SEO_IMAGE}
+        robots={searchFromUrl ? 'noindex,follow' : 'index,follow'}
+        schema={[
+          ...baseGraph(),
+          webPageSchema({
+            path: canonicalPath,
+            name: pageTitle,
+            description: pageDescription,
+            type: 'CollectionPage',
+            image: DEFAULT_SEO_IMAGE
+          }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Gallery', path: canonicalPath }
+          ])
+        ]}
+      >
         {previousUrl && <link rel="prev" href={previousUrl} />}
         {nextUrl && <link rel="next" href={nextUrl} />}
-        <meta property="og:type" content="website" />
-        <meta property="og:title" content={pageTitleParts.join(' | ')} />
-        <meta property="og:description" content="Browse award-winning North American wildlife photography prints by Lynn Starnes. Canvas, metal, and acrylic prints." />
-        <meta property="og:image" content="https://images.greatwildlifephotos.com/photos/fb-2026-bobcat-in-snow-lbs9571-copy-1781792895936.jpg" />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:site_name" content="Great Wildlife Photos" />
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:image" content="https://images.greatwildlifephotos.com/photos/fb-2026-bobcat-in-snow-lbs9571-copy-1781792895936.jpg" />
-      </Helmet>
+      </SEO>
 
       <div className="min-h-screen bg-background pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

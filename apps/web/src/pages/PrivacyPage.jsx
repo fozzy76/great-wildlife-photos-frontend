@@ -1,13 +1,15 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
+import SEO from '@/components/SEO.jsx';
 
 export default function PrivacyPage() {
   return (
     <div className="min-h-screen bg-background py-16 px-4 sm:px-6 lg:px-8">
-      <Helmet>
-        <title>{`Privacy Policy | Lynn Starnes Photography`}</title>
-        <meta name="description" content="Privacy Policy for Lynn Starnes Photography." />
-      </Helmet>
+      <SEO
+        title="Privacy Policy | Great Wildlife Photos"
+        description="Privacy policy for Great Wildlife Photos and Lynn Starnes wildlife photography print orders."
+        path="/privacy"
+        robots="noindex,follow"
+      />
       
       <div className="max-w-3xl mx-auto">
         <h1 className="text-4xl font-extrabold tracking-tight text-foreground mb-2">

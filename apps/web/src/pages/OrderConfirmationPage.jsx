@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
 import { Link, useSearchParams } from 'react-router-dom';
 import { CheckCircle, Package, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button.jsx';
 import { Skeleton } from '@/components/ui/skeleton.jsx';
+import SEO from '@/components/SEO.jsx';
 
 const OrderConfirmationPage = () => {
   const [searchParams] = useSearchParams();
@@ -83,10 +83,12 @@ const OrderConfirmationPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Order Confirmation - Great Wildlife Photos</title>
-        <meta name="description" content="Your order has been confirmed. Thank you for your purchase." />
-      </Helmet>
+      <SEO
+        title="Order Confirmation - Great Wildlife Photos"
+        description="Your Great Wildlife Photos order has been confirmed."
+        path="/order-success"
+        robots="noindex,nofollow"
+      />
 
       <style>{`
         @media print {

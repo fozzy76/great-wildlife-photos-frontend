@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
-import { Helmet } from 'react-helmet';
 import { Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { ArrowRight, Camera, Palette, Truck } from 'lucide-react';
 import { Button } from '@/components/ui/button.jsx';
 import { Skeleton } from '@/components/ui/skeleton.jsx';
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from '@/components/ui/carousel.jsx';
+import SEO from '@/components/SEO.jsx';
+import { DEFAULT_SEO_IMAGE, baseGraph, breadcrumbSchema, webPageSchema } from '@/lib/seo.js';
 
 const API_BASE = 'https://api.greatwildlifephotos.com';
 
@@ -46,10 +47,22 @@ const HomePage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Great Wildlife Photos - Premium Wildlife Photography Prints</title>
-        <meta name="description" content="Discover stunning wildlife photography prints by Lynn Starnes. Premium canvas, metal, and acrylic prints of North American wildlife." />
-      </Helmet>
+      <SEO
+        title="Great Wildlife Photos - Premium Wildlife Photography Prints"
+        description="Discover award-winning North American wildlife photography prints by Lynn Starnes. Shop premium canvas, metal, and acrylic prints captured in the wild."
+        path="/"
+        image={DEFAULT_SEO_IMAGE}
+        schema={[
+          ...baseGraph(),
+          webPageSchema({
+            path: '/',
+            name: 'Great Wildlife Photos',
+            description: 'Premium wildlife photography prints by Lynn Starnes.',
+            image: DEFAULT_SEO_IMAGE
+          }),
+          breadcrumbSchema([{ name: 'Home', path: '/' }])
+        ]}
+      />
 
       {/* Hero Section */}
       <section className="relative min-h-[75vh] mb-0 flex items-center justify-center overflow-hidden">

@@ -1,4 +1,6 @@
 import React, { useRef } from 'react';
+import SEO from '@/components/SEO.jsx';
+import { DEFAULT_SEO_IMAGE, baseGraph, breadcrumbSchema, faqSchema, webPageSchema } from '@/lib/seo.js';
 
 const faqSections = [
   {
@@ -140,34 +142,58 @@ const FAQItem = ({ question, answer }) => {
 
 const FAQPage = () => {
   return (
-    <main className="min-h-screen max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
-      <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4 text-center">
-        Frequently Asked Questions
-      </h1>
-      <p className="text-lg text-muted-foreground text-center mb-12">
-        Find answers to common questions about our prints, shipping, and policies.
-      </p>
+    <>
+      <SEO
+        title="Wildlife Print FAQ | Great Wildlife Photos"
+        description="Answers about Great Wildlife Photos print materials, ordering, shipping, returns, copyright, and Lynn Starnes' wildlife photography."
+        path="/faq"
+        image={DEFAULT_SEO_IMAGE}
+        schema={[
+          ...baseGraph(),
+          webPageSchema({
+            path: '/faq',
+            name: 'Wildlife Print FAQ',
+            description: 'Answers about Great Wildlife Photos print materials, ordering, shipping, returns, and copyright.',
+            type: 'FAQPage',
+            image: DEFAULT_SEO_IMAGE
+          }),
+          faqSchema(faqSections),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'FAQ', path: '/faq' }
+          ])
+        ]}
+      />
 
-      <div className="space-y-12">
-        {faqSections.map((section, sectionIndex) => (
-          <section
-            key={sectionIndex}
-            className="bg-card border border-border rounded-2xl p-6 md:p-10 shadow-sm"
-          >
-            <h2 className="text-2xl font-bold mb-6">{section.title}</h2>
-            <div className="w-full">
-              {section.items.map((faq, index) => (
-                <FAQItem
-                  key={`${sectionIndex}-${index}`}
-                  question={faq.question}
-                  answer={faq.answer}
-                />
-              ))}
-            </div>
-          </section>
-        ))}
-      </div>
-    </main>
+      <main className="min-h-screen max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 pt-24 pb-16">
+        <h1 className="text-4xl md:text-5xl font-serif font-bold mb-4 text-center">
+          Frequently Asked Questions
+        </h1>
+        <p className="text-lg text-muted-foreground text-center mb-12">
+          Find answers to common questions about our prints, shipping, and policies.
+        </p>
+
+        <div className="space-y-12">
+          {faqSections.map((section, sectionIndex) => (
+            <section
+              key={sectionIndex}
+              className="bg-card border border-border rounded-2xl p-6 md:p-10 shadow-sm"
+            >
+              <h2 className="text-2xl font-bold mb-6">{section.title}</h2>
+              <div className="w-full">
+                {section.items.map((faq, index) => (
+                  <FAQItem
+                    key={`${sectionIndex}-${index}`}
+                    question={faq.question}
+                    answer={faq.answer}
+                  />
+                ))}
+              </div>
+            </section>
+          ))}
+        </div>
+      </main>
+    </>
   );
 };
 

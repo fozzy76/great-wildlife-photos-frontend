@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Helmet } from 'react-helmet';
 import { useNavigate } from 'react-router-dom';
 import { loadStripe } from '@stripe/stripe-js';
 import {
@@ -14,6 +13,7 @@ import { Label } from '@/components/ui/label.jsx';
 import { toast } from 'sonner';
 import { useCart } from '@/contexts/CartContext.jsx';
 import { Lock, ArrowLeft, MapPin } from 'lucide-react';
+import SEO from '@/components/SEO.jsx';
 
 const stripePromise = fetch('https://api.greatwildlifephotos.com/catalog/config')
   .then(res => res.json())
@@ -357,10 +357,12 @@ const CheckoutPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Checkout - Great Wildlife Photos</title>
-        <meta name="description" content="Complete your wildlife photography print order." />
-      </Helmet>
+      <SEO
+        title="Checkout - Great Wildlife Photos"
+        description="Complete your Great Wildlife Photos wildlife photography print order."
+        path="/checkout"
+        robots="noindex,nofollow"
+      />
 
       <div className="min-h-screen bg-background pt-24 py-12">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">

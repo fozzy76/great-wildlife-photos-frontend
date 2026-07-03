@@ -4,7 +4,10 @@
 		<meta charset="UTF-8" />
 		<link rel="icon" type="image/png" href="https://images.greatwildlifephotos.com/branding/gwp-favicon.png" />
 		<link rel="alternate icon" href="https://images.greatwildlifephotos.com/branding/gwp-favicon.png" />
+		<link rel="preconnect" href="https://api.greatwildlifephotos.com" />
+		<link rel="preconnect" href="https://images.greatwildlifephotos.com" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="theme-color" content="#0b0b0b" />
 		<meta name="description" content="Award-winning North American wildlife photography by Lynn Starnes. Fine art prints on canvas, metal, and acrylic." />
 		<meta name="robots" content="index, follow" />
 		<link rel="canonical" href="https://greatwildlifephotos.com/" />
@@ -14,12 +17,14 @@
 		<meta property="og:description" content="Award-winning North American wildlife photography by Lynn Starnes. Fine art prints on canvas, metal, and acrylic." />
 		<meta property="og:site_name" content="Great Wildlife Photos" />
 		<meta property="og:image" content="https://images.greatwildlifephotos.com/photos/fb-2026-bobcat-in-snow-lbs9571-copy-1781792895936.jpg" />
+		<meta property="og:image:alt" content="Bobcat in snow wildlife photograph by Lynn Starnes" />
 		<meta property="og:locale" content="en_US" />
 		<meta name="twitter:card" content="summary_large_image" />
 		<meta name="twitter:url" content="https://greatwildlifephotos.com/" />
 		<meta name="twitter:title" content="Great Wildlife Photos - Premium Wildlife Photography Prints" />
 		<meta name="twitter:description" content="Award-winning North American wildlife photography by Lynn Starnes. Fine art prints on canvas, metal, and acrylic." />
 		<meta name="twitter:image" content="https://images.greatwildlifephotos.com/photos/fb-2026-bobcat-in-snow-lbs9571-copy-1781792895936.jpg" />
+		<meta name="twitter:image:alt" content="Bobcat in snow wildlife photograph by Lynn Starnes" />
 		<!-- Start Agency Attribution -->
 		<meta name="author" content="https://76designsolutions.com/">
 		<meta name="designer" content="76 Design Solutions">
@@ -50,6 +55,11 @@
 						"url": "https://greatwildlifephotos.com/",
 						"publisher": {
 							"@id": "https://greatwildlifephotos.com/#organization"
+						},
+						"potentialAction": {
+							"@type": "SearchAction",
+							"target": "https://greatwildlifephotos.com/gallery?q={search_term_string}",
+							"query-input": "required name=search_term_string"
 						}
 					},
 					{

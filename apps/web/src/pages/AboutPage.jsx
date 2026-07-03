@@ -2,10 +2,33 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button.jsx';
 import { Card, CardContent } from '@/components/ui/card.jsx';
+import SEO from '@/components/SEO.jsx';
+import { DEFAULT_SEO_IMAGE, baseGraph, breadcrumbSchema, webPageSchema } from '@/lib/seo.js';
 
 const AboutPage = () => {
   return (
     <main className="min-h-screen">
+      <SEO
+        title="About Lynn Starnes | Great Wildlife Photos"
+        description="Learn about Lynn Starnes, award-winning North American wildlife photographer recognized by Nature's Best Photography and the Smithsonian Institution."
+        path="/about"
+        image={DEFAULT_SEO_IMAGE}
+        schema={[
+          ...baseGraph(),
+          webPageSchema({
+            path: '/about',
+            name: 'About Lynn Starnes',
+            description: "Learn about Lynn Starnes, award-winning North American wildlife photographer.",
+            type: 'AboutPage',
+            image: DEFAULT_SEO_IMAGE
+          }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'About', path: '/about' }
+          ])
+        ]}
+      />
+
       {/* Hero Banner */}
       <div className="relative h-[40vh] min-h-[300px] flex items-center justify-center pt-20">
         <div 

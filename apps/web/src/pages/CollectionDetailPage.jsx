@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet';
 import pb from '@/lib/pocketbaseClient';
 import AsyncProductImage from '@/components/AsyncProductImage.jsx';
 import { Loader2, AlertCircle, ChevronRight, Home } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import SEO from '@/components/SEO.jsx';
 
 const CollectionDetailPage = () => {
   const { collectionSlug } = useParams();
@@ -47,9 +47,7 @@ const CollectionDetailPage = () => {
   if (loading) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
-        <Helmet>
-          <title>Loading Collection | Fine Art Wildlife</title>
-        </Helmet>
+        <SEO title="Loading Collection | Great Wildlife Photos" description="Loading curated wildlife photography collection." path={`/collections/${collectionSlug}`} robots="noindex,follow" />
         <Loader2 className="h-8 w-8 animate-spin text-primary" />
         <p className="text-muted-foreground animate-pulse">Loading collection...</p>
       </div>
@@ -59,9 +57,7 @@ const CollectionDetailPage = () => {
   if (error || !collection) {
     return (
       <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
-        <Helmet>
-          <title>Collection Not Found | Fine Art Wildlife</title>
-        </Helmet>
+        <SEO title="Collection Not Found | Great Wildlife Photos" description="This wildlife photography collection could not be found." path={`/collections/${collectionSlug}`} robots="noindex,follow" />
         <AlertCircle className="h-12 w-12 text-destructive mb-4" />
         <h1 className="text-3xl font-serif font-bold mb-4 tracking-tight">Collection Not Found</h1>
         <p className="text-lg text-muted-foreground mb-8 max-w-md">
@@ -81,10 +77,11 @@ const CollectionDetailPage = () => {
 
   return (
     <main className="min-h-screen py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <Helmet>
-        <title>{`${collection.name} | Fine Art Wildlife`}</title>
-        <meta name="description" content={collection.description || `Explore fine art prints from the ${collection.name} collection.`} />
-      </Helmet>
+      <SEO
+        title={`${collection.name} | Great Wildlife Photos`}
+        description={collection.description || `Explore fine art wildlife prints from the ${collection.name} collection.`}
+        path={`/collections/${collectionSlug}`}
+      />
 
       {/* Breadcrumb Navigation */}
       <nav aria-label="Breadcrumb" className="mb-10">

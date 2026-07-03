@@ -1,16 +1,33 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import { Mail } from 'lucide-react';
 import ContactForm from '@/components/ContactForm.jsx';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card.jsx';
+import SEO from '@/components/SEO.jsx';
+import { DEFAULT_SEO_IMAGE, baseGraph, breadcrumbSchema, webPageSchema } from '@/lib/seo.js';
 
 const ContactPage = () => {
   return (
     <>
-      <Helmet>
-        <title>Contact Us - Great Wildlife Photos</title>
-        <meta name="description" content="Get in touch with Great Wildlife Photos. We're here to help with any questions about our wildlife photography prints." />
-      </Helmet>
+      <SEO
+        title="Contact Lynn Starnes | Great Wildlife Photos"
+        description="Contact Lynn Starnes about wildlife photography prints, custom requests, international orders, licensing, or questions about Great Wildlife Photos."
+        path="/contact"
+        image={DEFAULT_SEO_IMAGE}
+        schema={[
+          ...baseGraph(),
+          webPageSchema({
+            path: '/contact',
+            name: 'Contact Lynn Starnes',
+            description: 'Contact Lynn Starnes about wildlife photography prints, custom requests, international orders, and licensing.',
+            type: 'ContactPage',
+            image: DEFAULT_SEO_IMAGE
+          }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Contact', path: '/contact' }
+          ])
+        ]}
+      />
 
       <div className="min-h-screen bg-background py-12 pt-24">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

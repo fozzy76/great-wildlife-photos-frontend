@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
 
+Host: greatwildlifephotos.com
 Sitemap: https://api.greatwildlifephotos.com/sitemap.xml

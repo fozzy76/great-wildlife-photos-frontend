@@ -1,9 +1,9 @@
 import React from 'react';
-import { Helmet } from 'react-helmet';
 import { Link, useNavigate } from 'react-router-dom';
 import { Trash2, Minus, Plus, ShoppingBag, Printer, Package, Camera, CreditCard } from 'lucide-react';
 import { Button } from '@/components/ui/button.jsx';
 import { useCart } from '@/contexts/CartContext.jsx';
+import SEO from '@/components/SEO.jsx';
 
 const CartPage = () => {
   const navigate = useNavigate();
@@ -12,10 +12,12 @@ const CartPage = () => {
   if (cartItems.length === 0) {
     return (
       <>
-        <Helmet>
-          <title>Shopping Cart - Great Wildlife Photos</title>
-          <meta name="description" content="Your shopping cart for wildlife photography prints." />
-        </Helmet>
+        <SEO
+          title="Shopping Cart - Great Wildlife Photos"
+          description="Your shopping cart for Great Wildlife Photos wildlife photography prints."
+          path="/cart"
+          robots="noindex,nofollow"
+        />
         <div className="min-h-screen bg-background pt-24 pb-20">
           <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <ShoppingBag className="w-24 h-24 text-muted-foreground mx-auto mb-6" />
@@ -34,10 +36,12 @@ const CartPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>Shopping Cart - Great Wildlife Photos</title>
-        <meta name="description" content="Review your selected wildlife photography prints and proceed to checkout." />
-      </Helmet>
+      <SEO
+        title="Shopping Cart - Great Wildlife Photos"
+        description="Review your selected wildlife photography prints and proceed to checkout."
+        path="/cart"
+        robots="noindex,nofollow"
+      />
 
       <div className="min-h-screen bg-background pt-24 pb-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet';
 import { Link, useParams, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, Minus, Plus, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button.jsx';
@@ -8,6 +7,8 @@ import { Skeleton } from '@/components/ui/skeleton.jsx';
 import { toast } from 'sonner';
 import { useCart } from '@/contexts/CartContext.jsx';
 import MaterialMockup from '@/components/MaterialMockup.jsx';
+import SEO from '@/components/SEO.jsx';
+import { baseGraph, breadcrumbSchema, productSchema, truncateText, webPageSchema } from '@/lib/seo.js';
 
 const API_BASE = 'https://api.greatwildlifephotos.com';
 
@@ -171,18 +172,40 @@ const PhotoDetailPage = () => {
   const materials = Object.keys(variants);
   const selectedVariant = getSelectedVariant();
   const categoryPath = '/gallery?category=' + encodeURIComponent(photo.category || '');
+  const canonicalPath = `/photo/${photo.slug}`;
+  const photoImage = photo.r2_url || photo.photo_url;
+  const photoDescription = truncateText(photo.description || `Premium ${photo.category} wildlife photography print by Lynn Starnes, available on canvas, metal, and acrylic.`, 155);
+  const offerPrices = Object.values(variants || {})
+    .flatMap(material => material?.sizes || [])
+    .map(size => getFinalPrice(size));
 
   // No compatible print sizes for this photo's resolution/aspect ratio
   if (materials.length === 0) {
     return (
       <>
-        <Helmet>
-          <title>{`${photo.title} - Great Wildlife Photos`}</title>
-          <meta name="description" content={photo.description || `Premium ${photo.category} wildlife photography print by Lynn Starnes.`} />
-          <meta property="og:image" content={photo.r2_url || photo.photo_url} />
-          <meta property="og:title" content={`${photo.title} - Great Wildlife Photos`} />
-          <meta property="og:type" content="product" />
-        </Helmet>
+        <SEO
+          title={`${photo.title} - Great Wildlife Photos`}
+          description={photoDescription}
+          path={canonicalPath}
+          image={photoImage}
+          type="product"
+          schema={[
+            ...baseGraph(),
+            webPageSchema({
+              path: canonicalPath,
+              name: `${photo.title} - Great Wildlife Photos`,
+              description: photoDescription,
+              type: 'ItemPage',
+              image: photoImage
+            }),
+            productSchema({ photo, offerPrices, canonicalPath }),
+            breadcrumbSchema([
+              { name: 'Home', path: '/' },
+              { name: 'Gallery', path: '/gallery' },
+              { name: photo.title, path: canonicalPath }
+            ])
+          ]}
+        />
         <div className="min-h-screen bg-background py-12">
           <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <Button variant="ghost" onClick={() => navigate('/gallery')} className="my-4 mb-8">
@@ -229,49 +252,32 @@ const PhotoDetailPage = () => {
 
   return (
     <>
-      <Helmet>
-        <title>{`${photo.title} - Great Wildlife Photos`}</title>
-        <meta name="description" content={photo.description || `Premium ${photo.category} wildlife photography print available in multiple sizes and materials.`} />
-        
-        <meta property="og:title" content={`${photo.title} - Great Wildlife Photos`} />
-        <meta property="og:description" content={photo.description || `Premium ${photo.category} wildlife photography print available in multiple sizes and materials.`} />
-        <meta property="og:image" content={photo.r2_url || photo.photo_url} />
-        <meta property="og:url" content={`https://greatwildlifephotos.com/photo/${photo.slug}`} />
-        <meta property="og:type" content="product" />
-        
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={`${photo.title} - Great Wildlife Photos`} />
-        <meta name="twitter:description" content={photo.description || `Premium ${photo.category} wildlife photography print available in multiple sizes and materials.`} />
-        <meta name="twitter:image" content={photo.r2_url || photo.photo_url} />
-
-        {/* Google may warn that Product schema is missing review/aggregateRating.
-            Leave those fields out until GWP has real, visible, product-specific review data. */}
-        <script type="application/ld+json">{JSON.stringify({
-          "@context": "https://schema.org",
-          "@type": "Product",
-          "name": photo?.title,
-          "description": photo?.description,
-          "image": photo?.r2_url || photo?.photo_url,
-          "brand": {
-            "@type": "Brand",
-            "name": "Great Wildlife Photos"
-          },
-          "offers": {
-            "@type": "AggregateOffer",
-            "priceCurrency": "USD",
-            "lowPrice": "13.35",
-            "highPrice": "129.00",
-            "offerCount": "18",
-            "availability": "https://schema.org/InStock",
-            "seller": {
-              "@type": "Organization",
-              "name": "Great Wildlife Photos"
-            }
-          },
-          "category": photo?.category,
-          "url": `https://greatwildlifephotos.com/photo/${photo?.slug}`
-        })}</script>
-      </Helmet>
+      <SEO
+        title={`${photo.title} - Great Wildlife Photos`}
+        description={photoDescription}
+        path={canonicalPath}
+        image={photoImage}
+        type="product"
+        schema={[
+          ...baseGraph(),
+          webPageSchema({
+            path: canonicalPath,
+            name: `${photo.title} - Great Wildlife Photos`,
+            description: photoDescription,
+            type: 'ItemPage',
+            image: photoImage
+          }),
+          productSchema({ photo, offerPrices, canonicalPath }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Gallery', path: '/gallery' },
+            { name: photo.title, path: canonicalPath }
+          ])
+        ]}
+      >
+        {photo.width && <meta property="og:image:width" content={String(photo.width)} />}
+        {photo.height && <meta property="og:image:height" content={String(photo.height)} />}
+      </SEO>
 
       <div className="min-h-screen bg-background py-12">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
