@@ -25,7 +25,7 @@ const AboutPage = () => {
             Three Decades in the Wild
           </h1>
           <p className="text-lg md:text-xl text-gray-100 drop-shadow-lg leading-relaxed">
-            Lynn Starnes is an award-winning wildlife photographer whose images have been recognized by the Smithsonian Institution. She has spent over thirty years pursuing North American wildlife in its most remote and extreme environments, from the Arctic at -46°F to the ridgelines of the Sierra Nevada.
+            Lynn Starnes is an award-winning wildlife photographer whose images have been recognized by the Smithsonian Institution. She has spent over thirty years pursuing North American wildlife in its most remote and extreme environments, from the Arctic to the ridgelines of the Sierra Nevada.
           </p>
         </div>
       </div>
@@ -52,7 +52,7 @@ const AboutPage = () => {
               Her specialty is North American wildlife in its most authentic moments. Her collections include Black Bears (from black bears to coastal browns to polar bears in the high Arctic), Wild Horses captured in motion at sunrise, Mule Deer at dawn in arid canyon country, Bighorn Sheep in the rugged terrain of the American West, Bull Elk during the rut with storm skies behind them, and the four-season beauty of Lake Tahoe - including rare lightning captures and Northern Lights over Emerald Bay.
             </p>
             <p>
-              In 2018, Lynn's polar bear images were named Top 25 in Nature's Best Photography, a prestigious international competition judged in partnership with the Smithsonian Institution. Those images were captured at -46°F on the Arctic ice - a shoot that required as much survival preparation as photographic skill.
+              In 2018, Lynn's polar bear images were named Top 25 in Nature's Best Photography, a prestigious international competition judged in partnership with the Smithsonian Institution. Those images were captured on the Arctic ice - a shoot that required as much survival preparation as photographic skill.
             </p>
             <p>
               Every photograph in this store was captured in the wild. Nothing is staged, nothing is manipulated. What you see is what Lynn saw through the lens - and what she risked the cold, the altitude, and the silence to bring back for you.

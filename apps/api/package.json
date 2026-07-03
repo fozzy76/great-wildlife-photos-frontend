@@ -19,14 +19,14 @@
     "jsonwebtoken": "9.0.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "node-cron": "^3.0.0",
+    "node-cron": "^4.5.0",
     "pocketbase": "^0.26.9",
     "stripe": "^14.0.0"
   },
   "devDependencies": {
-    "globals": "^15.14.0",
     "@eslint/js": "^9.39.4",
     "eslint": "^9.39.4",
-    "eslint-plugin-import": "^2.32.0"
+    "eslint-plugin-import": "^2.32.0",
+    "globals": "^15.14.0"
   }
 }

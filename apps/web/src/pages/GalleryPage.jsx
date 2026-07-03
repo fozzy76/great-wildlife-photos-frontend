@@ -100,7 +100,7 @@ const GalleryPage = () => {
           <div className="mb-12">
             <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance">Photo gallery</h1>
             <p className="text-lg text-muted-foreground max-w-2xl">
-              Lynn Starnes has photographed North American wildlife for over three decades. These are her award-winning images, now available as premium fine art prints on canvas, metal, and acrylic. Each photograph was captured in the wild, never staged.
+              Lynn Starnes has photographed North American wildlife for over three decades. These are her award-winning images, now available as premium fine art prints on canvas, metal, and acrylic. Each photograph was captured in the wild. All shots are natural, wild.
             </p>
           </div>
 

@@ -18,7 +18,7 @@ const Footer = () => {
               Award-winning North American wildlife photography by Lynn Starnes. All photographs are © Lynn Starnes, all rights reserved.
             </p>
             <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px', marginTop: '10px', fontStyle: 'italic', lineHeight: '1.6' }}>
-              Every photograph captured in the wild.<br />Never staged. Never AI-generated.
+              Every photograph captured in the wild.<br />All shots are natural, wild. Never AI-generated.
             </p>
           </div>
 

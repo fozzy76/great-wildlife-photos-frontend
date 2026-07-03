@@ -179,7 +179,7 @@ const HomePage = () => {
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} transition={{ duration: 0.6 }}>
             <h2 className="text-3xl md:text-4xl font-bold mb-6 text-white">Ready to bring the wild home?</h2>
             <p className="text-lg mb-8 text-gray-400 max-w-2xl mx-auto">
-              Browse Lynn's complete collection - from Arctic polar bears to Sierra Nevada sunsets. Each print is a moment captured once, in the wild, never staged.
+              Browse Lynn's complete collection - from Arctic polar bears to Sierra Nevada sunsets. Each print is a moment captured once, in the wild. All shots are natural, wild.
             </p>
             <Button asChild size="lg" className="bg-primary text-white hover:bg-primary/90 transition-all duration-200 active:scale-[0.98]">
               <Link to="/gallery">Start exploring <ArrowRight className="ml-2 w-5 h-5" /></Link>

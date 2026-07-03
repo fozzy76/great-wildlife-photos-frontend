@@ -142,7 +142,7 @@ const OrderReceiptPage = () => {
       {/* Thank you note */}
       <div style={{ textAlign: 'center', marginTop: '40px', paddingTop: '20px', borderTop: '1px solid #e5e5e5' }}>
         <p style={{ fontSize: '14px', color: '#666', fontStyle: 'italic' }}>
-          Thank you for your purchase. Every photograph is captured in the wild &mdash; never staged, never AI-generated.
+          Thank you for your purchase. Every photograph is captured in the wild. All shots are natural, wild. Never AI-generated.
         </p>
         <p style={{ fontSize: '12px', color: '#999', marginTop: '8px' }}>
           &copy; {new Date().getFullYear()} Lynn Starnes / Great Wildlife Photos. All photographs are trademarked and may not be reproduced without written permission.

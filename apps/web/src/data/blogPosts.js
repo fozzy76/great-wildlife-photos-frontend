@@ -78,7 +78,7 @@ Acrylic is the premium choice for collectors and for spaces where you want the p
  
 ## One More Thing: Size Matters
  
-Whatever material you choose, don't go too small. Wildlife photography is about scale - the feeling that the animal is present with you in the room. Lynn recommends a minimum of 16" x 20" for any wall display, and 24" x 30" or larger for a focal point piece.
+Whatever material you choose, don't go too small. Wildlife photography is about scale - the feeling that the animal is present with you in the room. Lynn recommends a minimum of 16" x 20" for any wall display, and 20" x 30" or larger for a focal point piece.
  
 Small prints can feel like snapshots. Large prints feel like windows into another world.
  
@@ -93,8 +93,8 @@ Browse Lynn's current collection and use the material selector on any photo page
   },
   {
     slug: 'behind-the-shot-tracking-bobcats-in-winter',
-    title: 'Behind the Shot: Tracking Bobcats in Winter at -46°F',
-    excerpt: 'Lynn Starnes shares the story behind her award-winning bobcat photography - tracking wild cats through frozen wilderness, and what it takes to capture a moment the Smithsonian called one of the best nature photos of 2018.',
+    title: 'Behind the Shot: Tracking Bobcats in Winter',
+    excerpt: 'Lynn Starnes shares the story behind her bobcat photography - tracking wild cats through frozen wilderness, and what it takes to capture a rare moment in the wild.',
     date: '2026-07-18',
     readTime: '7 min read',
     coverImage: 'https://images.greatwildlifephotos.com/photos/fb-2026-bobcat-in-snow-lbs9571-copy-1781792895936.jpg',
@@ -133,9 +133,7 @@ And then there's the waiting. Wildlife photography is 95% waiting. You find a li
  
 On the third morning, the bobcat appeared at the edge of a snow-covered clearing. The light was flat and white - the kind of winter light that makes colors pop against the snow. The cat moved slowly, head low, eyes scanning. Lynn had perhaps thirty seconds before it disappeared into the brush.
  
-The image that emerged - the cat mid-stride, snow crystals on its fur, the expression of focused concentration that only a predator has - was named one of the Top 25 photographs in Nature's Best Photography, a prestigious international competition judged in partnership with the Smithsonian Institution.
- 
-It was captured at -46°F.
+The image that emerged - the cat mid-stride, snow crystals on its fur, the expression of focused concentration that only a predator has - became one of Lynn's most recognized winter wildlife photographs.
  
 ---
  
@@ -162,7 +160,7 @@ Lynn's bobcat series currently includes four photographs, each capturing a diffe
  
 ## Ready to Bring One Home?
  
-Every photograph in Lynn's bobcat collection is available as a premium canvas, metal, or acrylic print. Each one was captured in the wild - never staged, never manipulated.
+Every photograph in Lynn's bobcat collection is available as a premium canvas, metal, or acrylic print. Each one was captured in the wild. All shots are natural, wild. Never manipulated.
  
 If you're not sure which image or material is right for your space, [contact Lynn directly](/contact). She's happy to help you choose.
  

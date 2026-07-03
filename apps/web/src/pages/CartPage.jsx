@@ -158,7 +158,7 @@ const CartPage = () => {
                   <Camera size={22} color="rgb(234,179,8)" />
                 </div>
                 <h4 style={{ color: 'white', fontWeight: 600, marginBottom: '8px' }}>100% authentic</h4>
-                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', lineHeight: '1.6' }}>Every photograph was captured in the wild by Lynn Starnes. Never staged, never AI-generated. Named Top 25 by the Smithsonian Institution, 2018.</p>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', lineHeight: '1.6' }}>Every photograph was captured in the wild by Lynn Starnes. All shots are natural, wild. Never AI-generated. Named Top 25 by the Smithsonian Institution, 2018.</p>
               </div>
               <div style={{ textAlign: 'center', padding: '20px' }}>
                 <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(var(--primary-rgb, 234,179,8),0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>
