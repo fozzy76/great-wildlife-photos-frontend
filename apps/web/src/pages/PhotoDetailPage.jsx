@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate, useSearchParams } from 'react-router-dom';
 import { ArrowLeft, ShoppingCart, Minus, Plus, CheckCircle, ChevronLeft, ChevronRight } from 'lucide-react';
 import { Button } from '@/components/ui/button.jsx';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select.jsx';
@@ -15,6 +15,7 @@ const API_BASE = 'https://api.greatwildlifephotos.com';
 const PhotoDetailPage = () => {
   const { slug } = useParams();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { addToCart } = useCart();
   const [photo, setPhoto] = useState(null);
   const [variants, setVariants] = useState(null);
@@ -27,6 +28,8 @@ const PhotoDetailPage = () => {
   const [justAdded, setJustAdded] = useState(false);
   const [allSlugs, setAllSlugs] = useState([]);
   const [currentIndex, setCurrentIndex] = useState(-1);
+  const materialParam = (searchParams.get('material') || '').toLowerCase();
+  const variantParam = parseInt(searchParams.get('variant') || '', 10);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -76,9 +79,27 @@ const PhotoDetailPage = () => {
           const materials = Object.keys(variantData.variants);
           if (materials.length > 0) {
             setVariants(variantData.variants);
-            const firstMaterial = materials[0];
-            setSelectedMaterial(firstMaterial);
-            setSelectedVariantId(variantData.variants[firstMaterial].sizes[0].id);
+            let nextMaterial = materials[0];
+            let nextVariantId = variantData.variants[nextMaterial].sizes[0].id;
+
+            if (materialParam && variantData.variants[materialParam]) {
+              nextMaterial = materialParam;
+              nextVariantId = variantData.variants[nextMaterial].sizes[0].id;
+            }
+
+            if (Number.isFinite(variantParam)) {
+              for (const material of materials) {
+                const requestedVariant = variantData.variants[material].sizes.find(size => size.id === variantParam);
+                if (requestedVariant) {
+                  nextMaterial = material;
+                  nextVariantId = requestedVariant.id;
+                  break;
+                }
+              }
+            }
+
+            setSelectedMaterial(nextMaterial);
+            setSelectedVariantId(nextVariantId);
           } else {
             console.warn('No compatible variants found for photo', photo.id);
             setVariants({});
@@ -93,7 +114,7 @@ const PhotoDetailPage = () => {
       }
     };
     fetchData();
-  }, [slug, navigate]);
+  }, [slug, navigate, materialParam, variantParam]);
 
   const navigateToPhoto = (direction) => {
     if (allSlugs.length === 0 || currentIndex === -1) return;
