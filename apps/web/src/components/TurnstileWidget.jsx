@@ -32,7 +32,12 @@ async function getAuthConfig() {
   return authConfigPromise;
 }
 
-const TurnstileWidget = forwardRef(function TurnstileWidget({ onVerify, className = '' }, ref) {
+const TurnstileWidget = forwardRef(function TurnstileWidget({
+  onVerify,
+  className = '',
+  theme = 'auto',
+  size = 'normal'
+}, ref) {
   const containerRef = useRef(null);
   const widgetIdRef = useRef(null);
   const [enabled, setEnabled] = useState(false);
@@ -60,6 +65,8 @@ const TurnstileWidget = forwardRef(function TurnstileWidget({ onVerify, classNam
       if (cancelled || !containerRef.current || widgetIdRef.current !== null) return;
       widgetIdRef.current = window.turnstile.render(containerRef.current, {
         sitekey: siteKey,
+        theme,
+        size,
         callback: token => onVerify(token),
         'expired-callback': () => onVerify(''),
         'error-callback': () => onVerify('')

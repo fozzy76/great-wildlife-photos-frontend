@@ -54,24 +54,32 @@ const NewsletterSignup = ({ className = '' }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className={`flex flex-col gap-2 sm:flex-row sm:items-start ${className}`}>
-      <Input
-        type="email"
-        placeholder="Enter your email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        required
-        className="flex-1 bg-white text-gray-900 placeholder:text-gray-500"
-        disabled={loading}
+    <form onSubmit={handleSubmit} className={`flex flex-col gap-3 ${className}`}>
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <Input
+          type="email"
+          placeholder="Enter your email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          required
+          className="min-w-0 flex-1 bg-white text-gray-900 placeholder:text-gray-500"
+          disabled={loading}
+        />
+        <Button
+          type="submit"
+          disabled={loading}
+          className="shrink-0 bg-primary text-primary-foreground hover:bg-primary/90"
+        >
+          {loading ? 'Subscribing...' : 'Subscribe'}
+        </Button>
+      </div>
+      <TurnstileWidget
+        ref={turnstileRef}
+        onVerify={handleTurnstileVerify}
+        theme="dark"
+        size="flexible"
+        className="min-h-[65px] w-full overflow-hidden"
       />
-      <Button
-        type="submit"
-        disabled={loading}
-        className="bg-primary text-primary-foreground hover:bg-primary/90"
-      >
-        {loading ? 'Subscribing...' : 'Subscribe'}
-      </Button>
-      <TurnstileWidget ref={turnstileRef} onVerify={handleTurnstileVerify} className="sm:basis-full" />
     </form>
   );
 };
