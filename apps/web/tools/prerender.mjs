@@ -186,14 +186,39 @@ async function main() {
     if (cfg && typeof cfg.markup_percentage === 'number') markupPct = cfg.markup_percentage;
   } catch (e) { console.warn('config fetch failed (using default 50% markup):', e.message); }
 
+  // The API caps a page at 100 regardless of the limit asked for, so this must
+  // paginate. It previously requested limit=200 in a single call and silently
+  // took whatever came back — once the catalogue passed 100 photos that left
+  // the remainder with no prerendered page, so they fell through to the SPA
+  // shell and inherited the HOMEPAGE title and canonical.
   let products = [];
   try {
-    const data = await fetchJson(`${API_BASE}/products?limit=200&offset=0`);
-    products = (data && data.products) || [];
+    const PAGE = 100;
+    for (let offset = 0; ; offset += PAGE) {
+      const data = await fetchJson(`${API_BASE}/products?limit=${PAGE}&offset=${offset}`);
+      const batch = (data && data.products) || [];
+      products = products.concat(batch);
+      const total = Number(data && data.total);
+      if (batch.length < PAGE) break;
+      if (Number.isFinite(total) && products.length >= total) break;
+      if (offset > 5000) break; // guard against a non-advancing endpoint
+    }
   } catch (e) {
     console.error('ABORT: product list fetch failed — cannot prerender photo pages:', e.message);
     process.exit(1);
   }
+
+  // A partial catalogue would ship canonical-collapsed pages, which is worse
+  // than failing the build.
+  try {
+    const head = await fetchJson(`${API_BASE}/products?limit=1&offset=0`);
+    const expected = Number(head && head.total);
+    if (Number.isFinite(expected) && products.length < expected) {
+      console.error(`ABORT: fetched ${products.length} products but the API reports ${expected}.`);
+      process.exit(1);
+    }
+  } catch { /* non-fatal: the count check is a safety net, not a requirement */ }
+
   console.log(`prerender: ${products.length} products, ${markupPct}% markup`);
 
   await pool(products, 5, async (photo) => {
