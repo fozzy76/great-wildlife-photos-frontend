@@ -115,8 +115,85 @@ function writeRoute(routePath, html) {
   fs.writeFileSync(path.join(dir, 'index.html'), html, 'utf8');
 }
 
-function renderRoute(template, meta, schemaGraph) {
-  return template.replace('<!--PRERENDER-INJECT-->', '    ' + headBlock(meta, schemaGraph));
+// Body content for crawlers.
+//
+// The prerender used to inject head tags only, leaving <div id="root"></div>
+// empty — so every page served a correct <head> and zero words of body text to
+// anything that does not execute JavaScript. Google renders JS eventually;
+// Bing largely does not, and AI and social scrapers do not at all.
+//
+// React mounts with createRoot, which clears the container, so visitors still
+// get the full app and there is no hydration mismatch. Everything below is
+// generated from the SAME data the page renders, so the markup cannot drift
+// away from what a visitor actually sees.
+function bodyBlock(html) {
+  return html ? html.trim() : '';
+}
+
+const money = (n) => `$${Number(n).toFixed(2)}`;
+
+function photoBody(photo, offerPrices, canonicalPath) {
+  const img = photo.r2_url || photo.photo_url || '';
+  const prices = offerPrices.filter((n) => Number.isFinite(n) && n > 0);
+  const lo = prices.length ? Math.min(...prices) : null;
+  const hi = prices.length ? Math.max(...prices) : null;
+  return bodyBlock(`
+    <article>
+      <nav aria-label="Breadcrumb">
+        <a href="/">Home</a> &rsaquo; <a href="/gallery/">Gallery</a> &rsaquo;
+        <span>${esc(photo.title)}</span>
+      </nav>
+      <h1>${esc(photo.title)}</h1>
+      ${photo.category ? `<p><strong>Collection:</strong> ${esc(photo.category)}</p>` : ''}
+      ${img ? `<img src="${esc(img)}" alt="${esc(photo.title)} — wildlife photography print by Lynn Starnes"${photo.width ? ` width="${photo.width}"` : ''}${photo.height ? ` height="${photo.height}"` : ''} />` : ''}
+      ${photo.description ? `<p>${esc(photo.description)}</p>` : ''}
+      ${lo !== null ? `<p><strong>Fine art prints from ${money(lo)}${hi && hi > lo ? ` to ${money(hi)}` : ''}</strong> — available on canvas, acrylic and aluminium.</p>` : ''}
+      <p>Photographed by Lynn Starnes. Every print is produced to order on museum-quality materials.</p>
+      <p><a href="${esc(canonicalPath)}/">View print options and pricing</a></p>
+    </article>
+  `);
+}
+
+function galleryBody(products) {
+  const items = products.slice(0, 200).map((p) =>
+    `<li><a href="/photo/${esc(p.slug)}/">${esc(p.title)}</a>${p.category ? ` &mdash; ${esc(p.category)}` : ''}</li>`
+  ).join('\n        ');
+  const cats = [...new Set(products.map((p) => p.category).filter(Boolean))];
+  return bodyBlock(`
+    <main>
+      <h1>Wildlife Photography Print Gallery</h1>
+      <p>${products.length} fine art wildlife and landscape photographs by Lynn Starnes, available as
+      canvas, acrylic and aluminium prints.</p>
+      ${cats.length ? `<h2>Collections</h2>\n      <ul>\n        ${cats.map((c) => `<li>${esc(c)}</li>`).join('\n        ')}\n      </ul>` : ''}
+      <h2>All photographs</h2>
+      <ul>
+        ${items}
+      </ul>
+    </main>
+  `);
+}
+
+function articleBody(post, path) {
+  const body = (post.content || post.excerpt || '').toString();
+  const text = body.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  return bodyBlock(`
+    <article>
+      <nav aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/blog/">Blog</a></nav>
+      <h1>${esc(post.title)}</h1>
+      ${post.date ? `<p><time>${esc(post.date)}</time></p>` : ''}
+      ${post.image ? `<img src="${esc(post.image)}" alt="${esc(post.title)}" />` : ''}
+      <p>${esc(text.slice(0, 2000))}</p>
+      <p><a href="${esc(path)}/">Read the full article</a></p>
+    </article>
+  `);
+}
+
+function renderRoute(template, meta, schemaGraph, body) {
+  let out = template.replace('<!--PRERENDER-INJECT-->', '    ' + headBlock(meta, schemaGraph));
+  if (body) {
+    out = out.replace('<div id="root"></div>', `<div id="root">${body}</div>`);
+  }
+  return out;
 }
 
 async function fetchJson(url) {
@@ -148,6 +225,11 @@ async function main() {
   const template = buildTemplate(shell);
   let count = 0;
 
+  // The gallery listing needs the product catalogue, which is fetched further
+  // down. Capture its meta here and rewrite that one file once we have it.
+  let galleryBodyHtml = '';
+  let galleryDeferred = null;
+
   // 1. Static routes (including home — overwrites the shell with uniform meta)
   for (const [p, meta] of Object.entries(STATIC_ROUTES)) {
     const graph = [
@@ -155,7 +237,8 @@ async function main() {
       webPageSchema({ path: meta.path, name: meta.title, description: meta.description, type: SCHEMA_TYPE[p] || 'WebPage', image: meta.image }),
       breadcrumbSchema(BREADCRUMBS[p] || [{ name: 'Home', path: '/' }]),
     ];
-    writeRoute(p, renderRoute(template, meta, graph));
+    if (p === '/gallery') galleryDeferred = { p, meta, graph };
+    writeRoute(p, renderRoute(template, meta, graph, ''));
     count++;
   }
 
@@ -175,7 +258,7 @@ async function main() {
       articleSchema({ post, path: cp }),
       breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog' }, { name: post.title, path: cp }]),
     ];
-    writeRoute(cp, renderRoute(template, meta, graph));
+    writeRoute(cp, renderRoute(template, meta, graph, articleBody(post, cp)));
     count++;
   }
 
@@ -221,6 +304,12 @@ async function main() {
 
   console.log(`prerender: ${products.length} products, ${markupPct}% markup`);
 
+  if (galleryDeferred && products.length) {
+    galleryBodyHtml = galleryBody(products);
+    writeRoute(galleryDeferred.p, renderRoute(template, galleryDeferred.meta, galleryDeferred.graph, galleryBodyHtml));
+    console.log(`prerender: gallery listing rewritten with ${products.length} products`);
+  }
+
   await pool(products, 5, async (photo) => {
     if (!photo || !photo.slug) return;
     const cp = `/photo/${photo.slug}`;
@@ -243,7 +332,7 @@ async function main() {
       productSchema({ photo, offerPrices, canonicalPath: cp }),
       breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Gallery', path: '/gallery' }, { name: photo.title, path: cp }]),
     ];
-    writeRoute(cp, renderRoute(template, meta, graph));
+    writeRoute(cp, renderRoute(template, meta, graph, photoBody(photo, offerPrices, cp)));
     count++;
   });
 
