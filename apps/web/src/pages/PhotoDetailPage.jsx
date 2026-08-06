@@ -56,16 +56,41 @@ const PhotoDetailPage = () => {
         const photo = photoData.product;
         setPhoto(photo);
 
-        // Fetch all product slugs for prev/next navigation
+        // Slugs for prev/next navigation.
+        //
+        // This used to request a flat /products?limit=50. Once the catalogue
+        // grew past 50 photos, anything outside that first page resolved to
+        // index -1, and the arrow handler bails on -1 — so the buttons looked
+        // enabled but did nothing.
+        //
+        // Navigate within the photo's own collection instead, which is what a
+        // visitor browsing Wild Horses expects, and page through in case a
+        // collection ever exceeds the API's 100-per-page cap.
         try {
-          const galleryRes = await fetch(API_BASE + '/products?limit=50');
-          const galleryData = await galleryRes.json();
-          if (galleryData.success && galleryData.products) {
-            const slugs = galleryData.products.map(p => p.slug);
-            setAllSlugs(slugs);
-            const idx = slugs.indexOf(photo.slug);
-            setCurrentIndex(idx);
-          }
+          const PAGE = 100;
+          const collect = async (query) => {
+            let out = [];
+            for (let offset = 0; ; offset += PAGE) {
+              const res = await fetch(`${API_BASE}/products?${query}&limit=${PAGE}&offset=${offset}`);
+              const data = await res.json();
+              const batch = (data && data.products) || [];
+              out = out.concat(batch);
+              if (batch.length < PAGE) break;
+              if (offset > 1000) break;
+            }
+            return out;
+          };
+
+          let list = photo.category
+            ? await collect(`category=${encodeURIComponent(photo.category)}`)
+            : [];
+          // Fall back to the whole catalogue if the category lookup comes back
+          // empty or somehow omits this photo.
+          if (!list.some((p) => p.slug === photo.slug)) list = await collect('sort=newest');
+
+          const slugs = list.map((p) => p.slug);
+          setAllSlugs(slugs);
+          setCurrentIndex(slugs.indexOf(photo.slug));
         } catch (e) {
           console.warn('Failed to fetch product list for navigation:', e.message);
         }
@@ -319,7 +344,7 @@ const PhotoDetailPage = () => {
                 variant="outline"
                 size="icon"
                 onClick={() => navigateToPhoto(-1)}
-                disabled={allSlugs.length === 0}
+                disabled={currentIndex === -1 || allSlugs.length < 2}
                 title="Previous photo"
               >
                 <ChevronLeft className="w-5 h-5" />
@@ -328,7 +353,7 @@ const PhotoDetailPage = () => {
                 variant="outline"
                 size="icon"
                 onClick={() => navigateToPhoto(1)}
-                disabled={allSlugs.length === 0}
+                disabled={currentIndex === -1 || allSlugs.length < 2}
                 title="Next photo"
               >
                 <ChevronRight className="w-5 h-5" />
