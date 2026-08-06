@@ -4,10 +4,31 @@ export const DEFAULT_SEO_IMAGE = 'https://images.greatwildlifephotos.com/photos/
 export const ORGANIZATION_ID = `${SITE_URL}/#organization`;
 export const WEBSITE_ID = `${SITE_URL}/#website`;
 
+// Canonical URLs must carry a trailing slash.
+//
+// The build writes every route as dist/apps/web/<route>/index.html — a
+// directory — so Apache/LiteSpeed DirectorySlash 301s /about to /about/. The
+// trailing-slash form is therefore the URL the server actually serves.
+//
+// This previously returned the no-slash form, so canonical, og:url, twitter:url
+// and every schema @id/url named a URL that redirects. Google reported the
+// affected pages as "Page with redirect" instead of indexing them, and split
+// each page's ranking across both forms (/about pos 6.6 vs /about/ pos 2.6).
+//
+// Query strings keep their place after the slash: /gallery?x -> /gallery/?x
 export const absoluteUrl = (path = '/') => {
   if (!path) return SITE_URL + '/';
   if (/^https?:\/\//i.test(path)) return path;
-  return SITE_URL + (path.startsWith('/') ? path : `/${path}`);
+
+  const withLeading = path.startsWith('/') ? path : `/${path}`;
+  const hashAt = withLeading.indexOf('#');
+  const hash = hashAt === -1 ? '' : withLeading.slice(hashAt);
+  const noHash = hashAt === -1 ? withLeading : withLeading.slice(0, hashAt);
+  const queryAt = noHash.indexOf('?');
+  const query = queryAt === -1 ? '' : noHash.slice(queryAt);
+  const pathname = queryAt === -1 ? noHash : noHash.slice(0, queryAt);
+
+  return SITE_URL + (pathname.endsWith('/') ? pathname : `${pathname}/`) + query + hash;
 };
 
 export const truncateText = (value = '', maxLength = 155) => {
