@@ -4,7 +4,8 @@
   "sourceOfTruth": "github.com/fozzy76/great-wildlife-photos-frontend — Hostinger Node app on account u403719632, build source_type=git. Serves the public storefront at https://greatwildlifephotos.com",
   "stack": "Vite + React SPA monorepo (package name 'monorepo'), Node 22, build script 'build', output dir 'dist/apps/web'. Client-rendered — per-route meta comes from an SSG prerender step (commit c14bd7f), NOT runtime SSR.",
   "verified": "2026-08-06 — git remote = fozzy76/great-wildlife-photos-frontend; live https://greatwildlifephotos.com returns title 'Great Wildlife Photos - Premium Wildlife Photography Prints', canonical https://greatwildlifephotos.com/, and GA4 G-JS8BB5NV28 which matches GWP_Master_State.md; Hostinger builds API shows source_type=git across all 25 recent builds",
-  "redFlags": "Push to origin/main builds from git = LIVE PUBLISH — confirm with Joe before pushing. GWP_Master_State.md says deploys go via hPanel 'Redeploy' (NOT 'Restart'); whether a push auto-triggers the build is NOT proven, so treat a push as publishing either way. SPA has no runtime SSR — re-run the SSR/prerender meta audit after ANY route or metadata change (canonical-collapse was fixed in c14bd7f). Repo also contains apps/api + apps/pocketbase whose /hcgi/* routes are NOT deployed and which Lynn does not use — status unconfirmed with Joe.",
+  "redFlags": "AUTO-DEPLOY CONFIRMED by Joe 2026-08-06: push to origin/main auto-builds and publishes LIVE. Confirm with Joe before pushing. SPA has no runtime SSR — re-run the SSR/prerender meta audit after ANY route or metadata change (canonical-collapse was fixed in c14bd7f). Repo also contains apps/api + apps/pocketbase whose /hcgi/* routes are NOT deployed and which Lynn does not use — status unconfirmed with Joe.",
   "relatedRepos": "great-wildlife-photos-backend serves api.greatwildlifephotos.com",
-  "stateOfRecord": "N:\\Clients\\Great Wildlife Photos\\Project Management\\GWP_Master_State.md"
+  "stateOfRecord": "N:\\Clients\\Great Wildlife Photos\\Project Management\\GWP_Master_State.md",
+  "autoDeploy": true
 }
