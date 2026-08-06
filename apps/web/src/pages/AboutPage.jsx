@@ -32,7 +32,8 @@ const AboutPage = () => {
         <div 
           className="absolute inset-0"
           style={{ 
-            backgroundImage: 'url(https://images.unsplash.com/photo-1504596408109-c4aa974c81d2?q=80&w=2000&auto=format&fit=crop)',
+            // Lynn's own work, not a stock landscape — this is her About page.
+            backgroundImage: 'url(https://images.greatwildlifephotos.com/photos/fb-2026-bobcat-in-snow-lbs9571-copy-1781792895936.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center'
           }}
@@ -54,29 +55,105 @@ const AboutPage = () => {
       <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-start mb-24">
           <div className="lg:col-span-5">
-            <div className="rounded-2xl overflow-hidden shadow-lg sticky top-24">
-              <img 
-                src="https://images.unsplash.com/photo-1607010063495-a18e40ec6ff3?q=80&w=800&auto=format&fit=crop" 
-                alt="Lynn Starnes Portrait" 
-                className="w-full h-auto object-cover aspect-[4/5]"
-              />
-              <p style={{ textAlign: 'center', color: 'rgba(255,255,255,0.4)', fontSize: '12px', marginTop: '8px', fontStyle: 'italic' }}>Photo of Lynn coming soon</p>
+            <div className="sticky top-24">
+              {/* Lynn at work in a photography blind. Replaces a stock library
+                  photo that was captioned "Lynn Starnes Portrait" — it was not
+                  her, and the alt text asserted that it was. */}
+              <figure className="rounded-2xl overflow-hidden shadow-lg">
+                <picture>
+                  <source srcSet="/images/lynn-starnes-in-the-blind.webp" type="image/webp" />
+                  <img
+                    src="/images/lynn-starnes-in-the-blind.jpg"
+                    alt="Lynn Starnes photographing from inside a camouflaged blind, behind a large telephoto lens"
+                    className="w-full h-auto object-cover"
+                    width="756"
+                    height="784"
+                    loading="lazy"
+                  />
+                </picture>
+                <figcaption className="bg-muted/40 px-4 py-3 text-sm text-muted-foreground italic">
+                  Lynn at work — waiting inside a blind, behind the long lens. Most of wildlife
+                  photography is the waiting.
+                </figcaption>
+              </figure>
+
+              <div className="mt-6 rounded-2xl border border-border bg-card p-6">
+                <h3 className="mb-4 font-serif text-lg font-bold text-foreground">Credentials</h3>
+                <dl className="space-y-3 text-sm">
+                  <div>
+                    <dt className="font-semibold text-foreground">Education</dt>
+                    <dd className="text-muted-foreground">
+                      B.S. Zoology, University of Tennessee (1972)<br />
+                      M.S. Aquatic Ecology, University of Tennessee (1976)
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold text-foreground">Career</dt>
+                    <dd className="text-muted-foreground">
+                      U.S. Fish and Wildlife Service, 1984–2006<br />
+                      Tennessee Valley Authority, 1974–1984<br />
+                      Peace Corps, West Africa, 1972–1974
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold text-foreground">Recognition</dt>
+                    <dd className="text-muted-foreground">
+                      Top 25, Nature&rsquo;s Best / Smithsonian, 2018<br />
+                      Registered Fisheries Scientist, American Fisheries Society
+                    </dd>
+                  </div>
+                  <div>
+                    <dt className="font-semibold text-foreground">Conservation</dt>
+                    <dd className="text-muted-foreground">
+                      Nevada Bighorns Unlimited &middot; Wild Sheep Foundation &middot; Rocky Mountain Elk Foundation
+                    </dd>
+                  </div>
+                </dl>
+              </div>
             </div>
           </div>
-          
+
           <div className="lg:col-span-7 space-y-6 text-lg text-muted-foreground leading-relaxed">
-            <h2 className="text-3xl font-serif font-bold text-foreground mb-6">The Artist Behind the Lens</h2>
+            <h2 className="text-3xl font-serif font-bold text-foreground mb-6">A biologist first, a photographer second</h2>
             <p>
-              Lynn grew up with a deep connection to the natural world. She learned to ride horses before she learned to drive, and that bond with animals has shaped every photograph she has ever taken. Wildlife photography was never a career choice - it was an inevitability.
+              Lynn Starnes spent thirty-eight years as a fish and wildlife biologist &mdash; researching
+              animals, running field studies, and managing habitat &mdash; before most people ever saw
+              one of her photographs. She has a master&rsquo;s degree in aquatic ecology, twenty-two
+              years with the U.S. Fish and Wildlife Service behind her, and a Peace Corps posting in
+              West Africa before that.
+            </p>
+            <p className="border-l-4 border-primary/40 pl-6 italic text-foreground">
+              &ldquo;The advantage of being a biologist first and a photographer second is my
+              knowledge of animal behavior and habitats. I see animals I am studying eating,
+              sleeping, in their mating rituals, and even playing. Most tourists who visit
+              America&rsquo;s wild lands rarely have the time to let animals acclimate to their
+              presence, so they rarely see animals being wild, natural, relaxed animals.&rdquo;
             </p>
             <p>
-              Her specialty is North American wildlife in its most authentic moments. Her collections include Black Bears (from black bears to coastal browns to polar bears in the high Arctic), Wild Horses captured in motion at sunrise, Mule Deer at dawn in arid canyon country, Bighorn Sheep in the rugged terrain of the American West, Bull Elk during the rut with storm skies behind them, and the four-season beauty of Lake Tahoe - including rare lightning captures and Northern Lights over Emerald Bay.
+              She calls herself an &ldquo;ambush photographer.&rdquo; There is no posing a bull elk.
+              What she does instead is wait &mdash; sometimes passing up the early, easy shots
+              entirely &mdash; until an animal forgets she is there.
+            </p>
+            <p className="border-l-4 border-primary/40 pl-6 italic text-foreground">
+              &ldquo;Photography for me is fundamentally a waiting game. I wait for the animal to
+              exhibit postures that I think are expressive. The expression of the animal, such as the
+              eyes looking directly into the lens, or the position of the body, will make the
+              difference between a marketable and possibly award-winning image or a throw away.&rdquo;
             </p>
             <p>
-              In 2018, Lynn's polar bear images were named Top 25 in Nature's Best Photography, a prestigious international competition judged in partnership with the Smithsonian Institution. Those images were captured on the Arctic ice - a shoot that required as much survival preparation as photographic skill.
+              That patience is what produced the polar bear photograph judged in the top 25 of almost
+              70,000 entries for Nature&rsquo;s Best / Smithsonian in 2018 &mdash; made during two
+              weeks at the Arctic Circle in weather that never rose above &minus;27&nbsp;&deg;F, and
+              dropped as low as &minus;46&nbsp;&deg;F as Hudson Bay froze over and the bears began
+              hunting seals, their first food in months.
             </p>
             <p>
-              Every photograph in this store was captured in the wild. Nothing is staged, nothing is manipulated. What you see is what Lynn saw through the lens - and what she risked the cold, the altitude, and the silence to bring back for you.
+              Every photograph sold here was made in the wild. Nothing is staged and nothing is
+              posed. It is the animal, the light, and however long it took.
+            </p>
+            <p className="border-l-4 border-primary/40 pl-6 italic text-foreground">
+              &ldquo;Hopefully, I can inspire you to love these wild animals that have been my life,
+              and to help conserve these wild animals and their habitats for future generations.&rdquo;
             </p>
             <div className="pt-6">
               <Button asChild size="lg" className="h-14 px-8 text-lg">
