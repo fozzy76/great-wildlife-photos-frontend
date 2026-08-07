@@ -36,7 +36,13 @@ const TurnstileWidget = forwardRef(function TurnstileWidget({
   onVerify,
   className = '',
   theme = 'auto',
-  size = 'normal'
+  size = 'normal',
+  // 'always'           — widget is always visible (default; right for the big forms)
+  // 'interaction-only' — stays invisible and issues a token silently, only
+  //                      surfacing if Cloudflare decides a challenge is needed.
+  //                      Use on small forms like the footer subscribe, where a
+  //                      full widget dominates the layout.
+  appearance = 'always'
 }, ref) {
   const containerRef = useRef(null);
   const widgetIdRef = useRef(null);
@@ -67,6 +73,7 @@ const TurnstileWidget = forwardRef(function TurnstileWidget({
         sitekey: siteKey,
         theme,
         size,
+        appearance,
         callback: token => onVerify(token),
         'expired-callback': () => onVerify(''),
         'error-callback': () => onVerify('')
@@ -79,7 +86,7 @@ const TurnstileWidget = forwardRef(function TurnstileWidget({
         try { window.turnstile.remove(widgetIdRef.current); } catch (_) {}
       }
     };
-  }, [onVerify]);
+  }, [onVerify, appearance, theme, size]);
 
   return <div ref={containerRef} className={className} />;
 });

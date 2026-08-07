@@ -10,7 +10,14 @@ const NewsletterSignup = ({ className = '' }) => {
   const [loading, setLoading] = useState(false);
   const [turnstileToken, setTurnstileToken] = useState('');
   const turnstileRef = useRef(null);
-  const handleTurnstileVerify = useCallback((token) => setTurnstileToken(token), []);
+  // Mirror the token in a ref as well as state: the wait below runs inside an
+  // event handler and would otherwise only ever see the token captured when
+  // this render closed over it.
+  const tokenRef = useRef('');
+  const handleTurnstileVerify = useCallback((token) => {
+    tokenRef.current = token;
+    setTurnstileToken(token);
+  }, []);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -18,8 +25,21 @@ const NewsletterSignup = ({ className = '' }) => {
 
     setLoading(true);
     try {
-      if (turnstileRef.current?.enabled && !turnstileToken) {
-        toast.error('Complete the security check first.');
+      // The widget is interaction-only here, so it is invisible and issues its
+      // token silently a moment after load. Telling someone to "complete the
+      // security check" would point at something they cannot see — so wait
+      // briefly for the token instead, and only fail if it never arrives.
+      let token = tokenRef.current || turnstileToken;
+      if (turnstileRef.current?.enabled && !token) {
+        const deadline = Date.now() + 5000;
+        while (!tokenRef.current && Date.now() < deadline) {
+          await new Promise((r) => setTimeout(r, 150));
+        }
+        token = tokenRef.current;
+      }
+      if (turnstileRef.current?.enabled && !token) {
+        toast.error('Security check could not complete. Please try again.');
+        turnstileRef.current?.reset();
         setLoading(false);
         return;
       }
@@ -27,7 +47,7 @@ const NewsletterSignup = ({ className = '' }) => {
 , {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, turnstileToken })
+        body: JSON.stringify({ email, turnstileToken: token })
       });
 
       const data = await response.json();
@@ -75,12 +95,18 @@ const NewsletterSignup = ({ className = '' }) => {
           {loading ? 'Subscribing...' : 'Subscribe'}
         </Button>
       </div>
+      {/* Footer subscribe is a small, single-field form — a full Turnstile
+          widget dominates it. interaction-only stays invisible and issues a
+          token silently, only surfacing if Cloudflare decides a challenge is
+          warranted. No reserved height, so there is no empty gap when it is
+          invisible; it sizes itself if a challenge does appear. */}
       <TurnstileWidget
         ref={turnstileRef}
         onVerify={handleTurnstileVerify}
         theme="dark"
         size="flexible"
-        className="min-h-[65px] w-full overflow-hidden"
+        appearance="interaction-only"
+        className="w-full overflow-hidden empty:hidden"
       />
     </form>
   );
