@@ -5,7 +5,7 @@ export const blogPosts = [
     excerpt: 'Most wildlife photographs fail because the photographer arrived, shot, and left. Lynn Starnes spent 38 years as a wildlife biologist before she was known for her images - here is the method that produces relaxed, natural animals instead of startled ones.',
     date: '2026-08-07',
     readTime: '9 min read',
-    coverImage: 'https://images.greatwildlifephotos.com/photos/fb-2026-bobcat-in-snow-lbs9571-copy-1781792895936.jpg',
+    coverImage: 'https://images.greatwildlifephotos.com/photos/fb-bull-elk-successful-in-the-rut-web-1786048097394.jpg',
     category: 'Behind the Lens',
     content: `
 Most wildlife photographs fail for the same reason: the photographer arrived, took the picture, and left.
@@ -97,7 +97,7 @@ You can see the results of the method across the collections — [elk during the
     excerpt: 'Canvas is the most forgiving way to hang wildlife photography - no glare, real texture, and no frame required. Here is how to choose the right image, the right size, and when canvas is the wrong answer.',
     date: '2026-08-07',
     readTime: '7 min read',
-    coverImage: 'https://images.greatwildlifephotos.com/photos/fb-2026-bobcat-in-snow-lbs9571-copy-1781792895936.jpg',
+    coverImage: 'https://images.greatwildlifephotos.com/photos/fb-nice-sized-rams-about-to-head-butt-copy-web-1786047876075.jpg',
     category: 'Buying Guide',
     content: `
 There is a moment that decides whether a wildlife photograph works on your wall: the first time you walk past it without meaning to look at it, and it stops you anyway.
@@ -178,7 +178,7 @@ If you are buying your first wildlife canvas print, start with the room rather t
     excerpt: 'Not sure which print material is right for your space? Learn how canvas, metal, and acrylic each bring out different qualities in wildlife photography - and how to choose the perfect one.',
     date: '2026-06-18',
     readTime: '6 min read',
-    coverImage: 'https://images.greatwildlifephotos.com/photos/fb-2026-bobcat-in-snow-lbs9571-copy-1781792895936.jpg',
+    coverImage: 'https://images.greatwildlifephotos.com/photos/fb-lake-tahoe-stunning-change-of-moods-web-1786048165008.jpg',
     category: 'Buying Guide',
     content: `
 When you fall in love with a wildlife photograph, the last thing you want is to hang it on your wall and feel like something's off. The image is stunning - but the material it's printed on changes everything: the mood, the texture, the way light plays across the surface, even how the animal seems to leap out at you (or recede into the background).
