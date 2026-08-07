@@ -128,8 +128,53 @@ function writeRoute(routePath, html) {
 // get the full app and there is no hydration mismatch. Everything below is
 // generated from the SAME data the page renders, so the markup cannot drift
 // away from what a visitor actually sees.
+// The prerendered body is the FIRST PAINT a visitor sees, before the ~813 kB
+// bundle parses and React replaces it. Unstyled, it rendered as raw white text
+// on the near-black theme background with no layout — which read as a glitch.
+//
+// So it is styled inline to match the site (Inter, the real theme colours, a
+// centred column) and looks like a deliberate, simple version of the page
+// while the app boots.
+//
+// It is styled, NOT hidden. Hiding content from visitors while serving it to
+// crawlers is cloaking, which is a far worse problem than a brief flash.
+const THEME = {
+  bg: 'hsl(20 10% 5%)',
+  fg: 'hsl(60 10% 98%)',
+  muted: 'hsl(20 5% 74%)',
+  primary: 'hsl(38 92% 50%)',
+  border: 'hsl(20 5% 20%)',
+};
+
 function bodyBlock(html) {
-  return html ? html.trim() : '';
+  if (!html) return '';
+  const css = [
+    `font-family:Inter,system-ui,sans-serif`,
+    `background:${THEME.bg}`,
+    `color:${THEME.fg}`,
+    `max-width:56rem`,
+    `margin:0 auto`,
+    `padding:6rem 1.5rem 4rem`,
+    `line-height:1.7`,
+    `font-size:1rem`,
+  ].join(';');
+  // Scoped element styles so headings, images and links are not left at
+  // browser defaults inside the injected block.
+  const scoped = `
+    #prerender-content h1{font-size:2rem;line-height:1.2;margin:0 0 1rem;font-weight:700}
+    #prerender-content h2{font-size:1.35rem;line-height:1.3;margin:2rem 0 .75rem;font-weight:700}
+    #prerender-content h3{font-size:1.1rem;margin:1.5rem 0 .5rem;font-weight:600}
+    #prerender-content p{margin:0 0 1rem;color:${THEME.muted}}
+    #prerender-content a{color:${THEME.primary};text-decoration:none}
+    #prerender-content img{max-width:100%;height:auto;border-radius:.75rem;margin:1rem 0}
+    #prerender-content ul{margin:0 0 1rem;padding-left:1.25rem;color:${THEME.muted}}
+    #prerender-content li{margin:.25rem 0}
+    #prerender-content nav{font-size:.875rem;color:${THEME.muted};margin-bottom:1.5rem}
+    #prerender-content dt{font-weight:600;margin-top:.75rem}
+    #prerender-content dd{margin:0;color:${THEME.muted}}
+    #prerender-content figcaption{font-size:.875rem;color:${THEME.muted};font-style:italic}
+  `.replace(/\s+/g, ' ').trim();
+  return `<div id="prerender-content" style="${css}"><style>${scoped}</style>${html.trim()}</div>`;
 }
 
 const money = (n) => `$${Number(n).toFixed(2)}`;
