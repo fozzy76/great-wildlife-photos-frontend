@@ -404,6 +404,18 @@ async function main() {
 
   console.log(`prerender: ${products.length} products, ${markupPct}% markup`);
 
+  // Publish the blog index as JSON so the backend sitemap can read it.
+  // Blog posts live in this repo but the sitemap is served by the API, which
+  // previously carried a HARDCODED list of slugs — so any new article was
+  // silently missing from the sitemap.
+  try {
+    fs.writeFileSync(
+      path.join(outputDir, 'blog-index.json'),
+      JSON.stringify(blogPosts.map((b) => ({ slug: b.slug, date: b.date })), null, 1)
+    );
+    console.log(`prerender: wrote blog-index.json (${blogPosts.length} posts)`);
+  } catch (e) { console.warn('blog-index.json write failed:', e.message); }
+
   if (galleryDeferred && products.length) {
     galleryBodyHtml = galleryBody(products);
     writeRoute(galleryDeferred.p, renderRoute(template, galleryDeferred.meta, galleryDeferred.graph, galleryBodyHtml));
