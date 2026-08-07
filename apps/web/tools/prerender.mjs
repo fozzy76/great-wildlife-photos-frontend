@@ -29,6 +29,8 @@ const seo = await import(toUrl(path.join(webRoot, 'src/lib/seo.js')));
 const routeMeta = await import(toUrl(path.join(webRoot, 'src/lib/routeMeta.js')));
 const blogMod = await import(toUrl(path.join(webRoot, 'src/data/blogPosts.js')));
 const blogPosts = blogMod.blogPosts || blogMod.default;
+const aboutMod = await import(toUrl(path.join(webRoot, 'src/data/aboutContent.js')));
+const faqMod = await import(toUrl(path.join(webRoot, 'src/data/faqs.js')));
 
 const {
   absoluteUrl, truncateText, baseGraph, webPageSchema, breadcrumbSchema,
@@ -188,6 +190,103 @@ function articleBody(post, path) {
   `);
 }
 
+function aboutBodyHtml() {
+  const { aboutHero, aboutHeading, aboutBody, aboutCredentials, aboutPortrait } = aboutMod;
+  return bodyBlock(`
+    <main>
+      <h1>${esc(aboutHero.heading)}</h1>
+      <p>${esc(aboutHero.standfirst)}</p>
+      <figure>
+        <img src="${esc(aboutPortrait.jpg)}" alt="${esc(aboutPortrait.alt)}" width="${aboutPortrait.width}" height="${aboutPortrait.height}" />
+        <figcaption>${esc(aboutPortrait.caption)}</figcaption>
+      </figure>
+      <h2>${esc(aboutHeading)}</h2>
+      ${aboutBody.map((b) => `<p>${b.type === 'quote' ? '&ldquo;' + esc(b.text) + '&rdquo;' : esc(b.text)}</p>`).join(' ')}
+      <h2>Credentials</h2>
+      <dl>
+        ${aboutCredentials.map((c) => `<dt>${esc(c.label)}</dt><dd>${c.lines.map(esc).join(' — ')}</dd>`).join(' ')}
+      </dl>
+    </main>
+  `);
+}
+
+function faqBodyHtml() {
+  const { faqSections } = faqMod;
+  return bodyBlock(`
+    <main>
+      <h1>Frequently Asked Questions</h1>
+      ${faqSections.map((sec) => `
+      <section>
+        <h2>${esc(sec.title)}</h2>
+        ${sec.items.map((it) => `<h3>${esc(it.question)}</h3>
+        <p>${esc(it.answer)}</p>`).join(' ')}
+      </section>`).join(' ')}
+    </main>
+  `);
+}
+
+function blogIndexBodyHtml() {
+  return bodyBlock(`
+    <main>
+      <h1>Field Notes &amp; Print Guides</h1>
+      <p>Writing on wildlife photography, print materials and the animals Lynn photographs.</p>
+      <ul>
+        ${blogPosts.map((post) => `<li><a href="/blog/${esc(post.slug)}/">${esc(post.title)}</a>${post.excerpt ? ` &mdash; ${esc(String(post.excerpt).slice(0, 160))}` : ''}</li>`).join(' ')}
+      </ul>
+    </main>
+  `);
+}
+
+function homeBodyHtml() {
+  const m = STATIC_ROUTES['/'] || {};
+  return bodyBlock(`
+    <main>
+      <h1>${esc(m.title || 'Great Wildlife Photos')}</h1>
+      <p>${esc(m.description || '')}</p>
+      <p>Award-winning North American wildlife and landscape photography by Lynn Starnes,
+      available as museum-quality canvas, acrylic and aluminium prints. Lynn spent thirty-eight
+      years as a fish and wildlife biologist before turning her field knowledge into photographs
+      &mdash; including a polar bear image judged in the top 25 of almost 70,000 entries for
+      Nature's Best / Smithsonian in 2018.</p>
+      <h2>Collections</h2>
+      <ul>
+        <li><a href="/gallery/">Browse every wildlife print</a></li>
+        <li><a href="/about/">About Lynn Starnes</a></li>
+        <li><a href="/faq/">Print materials, sizes and shipping</a></li>
+        <li><a href="/blog/">Field notes and print guides</a></li>
+      </ul>
+      <p>Browse published wildlife prints one image at a time. Ready to bring the wild home?</p>
+    </main>
+  `);
+}
+
+function contactBodyHtml() {
+  const m = STATIC_ROUTES['/contact'] || {};
+  return bodyBlock(`
+    <main>
+      <h1>${esc(m.title || 'Contact')}</h1>
+      <p>${esc(m.description || '')}</p>
+      <h2>Send us a message</h2>
+      <p>Questions about a print, a size that is not listed, or an order already placed &mdash;
+      use the contact form and Lynn will reply directly.</p>
+      <h2>Custom photo requests</h2>
+      <p>If you have seen an image in one of the collections and need a size or material that is not
+      shown on the product page, ask &mdash; not every combination is listed.</p>
+      <h2>International orders</h2>
+      <p>International orders are handled by Lynn directly rather than through the online checkout.
+      Get in touch before ordering.</p>
+    </main>
+  `);
+}
+
+const STATIC_BODY = {
+  '/': homeBodyHtml,
+  '/about': aboutBodyHtml,
+  '/faq': faqBodyHtml,
+  '/blog': blogIndexBodyHtml,
+  '/contact': contactBodyHtml,
+};
+
 function renderRoute(template, meta, schemaGraph, body) {
   let out = template.replace('<!--PRERENDER-INJECT-->', '    ' + headBlock(meta, schemaGraph));
   if (body) {
@@ -238,7 +337,8 @@ async function main() {
       breadcrumbSchema(BREADCRUMBS[p] || [{ name: 'Home', path: '/' }]),
     ];
     if (p === '/gallery') galleryDeferred = { p, meta, graph };
-    writeRoute(p, renderRoute(template, meta, graph, ''));
+    const staticBody = STATIC_BODY[p] ? STATIC_BODY[p]() : '';
+    writeRoute(p, renderRoute(template, meta, graph, staticBody));
     count++;
   }
 
