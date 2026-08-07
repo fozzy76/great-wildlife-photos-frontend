@@ -174,7 +174,19 @@ function bodyBlock(html) {
     #prerender-content dd{margin:0;color:${THEME.muted}}
     #prerender-content figcaption{font-size:.875rem;color:${THEME.muted};font-style:italic}
   `.replace(/\s+/g, ' ').trim();
-  return `<div id="prerender-content" style="${css}"><style>${scoped}</style>${html.trim()}</div>`;
+  // The site's nav and footer are React-rendered, so NO internal links exist in
+  // the raw HTML. Anything that does not execute JavaScript can only follow
+  // links that appear here — which left /contact/ an orphan, reachable from
+  // nothing. This minimal nav guarantees every main section is crawlable.
+  const nav = `<nav aria-label="Site" style="border-top:1px solid ${THEME.border};margin-top:2.5rem;padding-top:1.25rem;font-size:.875rem">
+    <a href="/">Home</a> &middot;
+    <a href="/gallery/">Gallery</a> &middot;
+    <a href="/about/">About Lynn Starnes</a> &middot;
+    <a href="/blog/">Field Notes</a> &middot;
+    <a href="/faq/">FAQ</a> &middot;
+    <a href="/contact/">Contact</a>
+  </nav>`;
+  return `<div id="prerender-content" style="${css}"><style>${scoped}</style>${html.trim()}${nav}</div>`;
 }
 
 const money = (n) => `$${Number(n).toFixed(2)}`;
