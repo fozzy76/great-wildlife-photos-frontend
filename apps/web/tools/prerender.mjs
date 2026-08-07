@@ -352,8 +352,18 @@ function renderRoute(template, meta, schemaGraph, body) {
   return out;
 }
 
+// Build-time reads MUST be fresh. A build that fetches a cached product list
+// bakes stale titles and descriptions into static HTML that then sits there
+// until the next deploy — observed after retitling two photographs: the API
+// returned the new titles while the prerendered pages still showed the old
+// ones. Bust the cache explicitly rather than trusting upstream headers.
 async function fetchJson(url) {
-  const r = await fetch(url, { headers: { 'user-agent': 'GWP-prerender/1.0' } });
+  const bust = `_pr=${Date.now()}${Math.random().toString(36).slice(2, 8)}`;
+  const fresh = url + (url.includes('?') ? '&' : '?') + bust;
+  const r = await fetch(fresh, {
+    headers: { 'user-agent': 'GWP-prerender/1.0', 'cache-control': 'no-cache', pragma: 'no-cache' },
+    cache: 'no-store',
+  });
   if (!r.ok) throw new Error(`${r.status} ${url}`);
   return r.json();
 }
