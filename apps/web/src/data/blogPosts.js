@@ -1,5 +1,97 @@
 export const blogPosts = [
   {
+    slug: 'how-to-photograph-wildlife-field-craft',
+    title: 'How to Photograph Wildlife: Field Craft From a Working Biologist',
+    excerpt: 'Most wildlife photographs fail because the photographer arrived, shot, and left. Lynn Starnes spent 38 years as a wildlife biologist before she was known for her images - here is the method that produces relaxed, natural animals instead of startled ones.',
+    date: '2026-08-07',
+    readTime: '9 min read',
+    coverImage: 'https://images.greatwildlifephotos.com/photos/fb-2026-bobcat-in-snow-lbs9571-copy-1781792895936.jpg',
+    category: 'Behind the Lens',
+    content: `
+Most wildlife photographs fail for the same reason: the photographer arrived, took the picture, and left.
+
+Lynn Starnes spent thirty-eight years as a fish and wildlife biologist before she was known for her photographs — U.S. Fish and Wildlife Service, the Tennessee Valley Authority, a master's degree in aquatic ecology. That background is not decoration. It is the reason the animals in her images look relaxed instead of alarmed, and it changes what she does in the field.
+
+Here is the method, in her own words and mine.
+
+## The advantage is knowing the animal, not the camera
+
+> "The advantage of being a biologist first and a photographer second is my knowledge of animal behavior and habitats. I see animals I am studying eating, sleeping, in their mating rituals, and even playing. Most tourists who visit America's wild lands rarely have the time to let animals acclimate to their presence, so they rarely see animals being wild, natural, relaxed animals."
+
+This is the whole thing in one paragraph. Gear gets discussed endlessly because gear is easy to discuss. But knowing that mule deer are moving at dawn and dusk and bedded in ravines through the middle of the day tells you when to be out and where to look. No lens compensates for arriving at the wrong hour.
+
+**Practical version:** before you photograph a species, learn its daily and seasonal rhythm. When does it feed? When does it move between cover and water? What time of year does its behaviour change? Elk during the rut behave nothing like elk in July.
+
+## Be an ambush photographer
+
+Lynn calls herself an "ambush photographer." A studio portraitist can pose a subject. She cannot ask a bull elk to lift its head.
+
+> "So, I make my animal photographs through great patience. Photography for me is fundamentally a waiting game."
+
+The tactic that follows from this is counter-intuitive and it is the one most people get wrong: **deliberately pass up the early shots.**
+
+> "Sometimes, being motionless and passing up early photographs of the animal is my key to great photographs."
+
+Every frame you take early announces you. Shutter noise, movement, the shift of a lens. If you spend those first minutes still and quiet instead, the animal stops treating you as an event. What you get afterwards is an animal behaving normally, which is the only kind of image worth keeping.
+
+**Practical version:** when you find your subject, do nothing for the first stretch. Let it look at you, decide you are boring, and go back to what it was doing.
+
+## Wait for the posture, not the animal
+
+Being in the right place is not the photograph. The photograph is a specific arrangement of the animal that lasts a fraction of a second.
+
+> "I wait for the animal to exhibit postures that I think are expressive. Timing is of great importance. The expression of the animal, such as the eyes looking directly in to the lens, or the position of the body, will make the difference between a marketable and possibly award-winning image or a throw away."
+
+What she is watching for is a combination — **head, legs or wings, and eyes** — resolving at the same instant. Most of the time one of the three is wrong. The ears are turned away, a leg is mid-stride and awkward, the eye is in shadow.
+
+**Practical version:** stop shooting continuously and start watching. Learn the two or three postures that read well for your species, then wait for one. You will take fewer frames and keep far more of them.
+
+## Eye contact is the difference
+
+Across almost all of Lynn's strongest work, the animal is looking at the lens. That is not luck; it is what she is waiting for.
+
+> "Her focus is waiting for the animal look at the camera/lens giving the animal in the photograph a very close, intimate connection."
+
+An animal facing away is a picture of an animal. An animal looking directly down the barrel of a long lens is a picture of an encounter. The difficulty is that ears and eyes are almost never still — as she puts it, animals are "ever alert for that sign of danger." The window is brief and it does not repeat on request.
+
+## Sometimes you have to speak the language
+
+Patience is not always passive. When waiting will not produce the moment, she changes the animal's mind about her.
+
+> "Other times, I use wildlife calls and hunting techniques to convince the animal that I am another wildlife species."
+
+One of her bull elk photographs exists because a bull heading to water stopped to answer her bugle. Another came from a bull that walked past a blind, out of position, and turned back when she called.
+
+This is a skill borrowed wholesale from hunting, and it is why so many serious wildlife photographers have hunting backgrounds. The fieldcraft is identical up to the final second.
+
+## The conditions everybody else avoids
+
+The best light is usually attached to the worst weather.
+
+> "This is the best and worst of days to be photographing. If I see an animal, the photos will be spectacular. The walking, however, is terrible."
+
+Storm light, falling snow, the minutes on either side of a front — these produce the images that stop people. They also mean cold hands, poor footing and a real chance of coming home with nothing. Lynn's polar bear work meant two weeks at the Arctic Circle in weather that never rose above −27 °F and dropped to −46 °F. That photograph was judged in the top 25 of almost 70,000 entries for Nature's Best / Smithsonian in 2018.
+
+**Practical version:** when the forecast is bad and you would rather not, that is the day to go.
+
+## Distance, and the ethics of it
+
+Long glass is not about reach for its own sake. It is about not changing the animal's behaviour.
+
+> "Photographing wild sheep may be the most challenging photography as I try to get my photos without causing the sheep to flee because of my presence. I have great telephoto lenses!"
+
+If the animal has noticed you and altered what it was doing, you are too close — and the picture is worse for it, because now you are photographing a disturbed animal. The lens buys the distance that keeps the behaviour natural.
+
+## What this adds up to
+
+Almost none of the above is about equipment. It is about arriving at the right hour, sitting still longer than feels reasonable, knowing which posture you are waiting for, and being willing to go out in weather that keeps everyone else indoors.
+
+> "Determination, persistence, skill, and of course luck, are all factors in whether the images captured are unique and expressive or not."
+
+You can see the results of the method across the collections — [elk during the rut](/gallery/), bighorn sheep in red rock, wild horses at water, and the polar bear work from the Arctic. [Browse the full gallery](/gallery/), or read more [about Lynn's background](/about/).
+`
+  },
+  {
     slug: 'wildlife-photos-on-canvas-buying-guide',
     title: 'Wildlife Photos on Canvas: What to Know Before You Buy',
     excerpt: 'Canvas is the most forgiving way to hang wildlife photography - no glare, real texture, and no frame required. Here is how to choose the right image, the right size, and when canvas is the wrong answer.',
