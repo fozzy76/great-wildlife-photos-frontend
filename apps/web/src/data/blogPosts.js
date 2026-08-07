@@ -1,5 +1,86 @@
 export const blogPosts = [
   {
+    slug: 'wildlife-photos-on-canvas-buying-guide',
+    title: 'Wildlife Photos on Canvas: What to Know Before You Buy',
+    excerpt: 'Canvas is the most forgiving way to hang wildlife photography - no glare, real texture, and no frame required. Here is how to choose the right image, the right size, and when canvas is the wrong answer.',
+    date: '2026-08-07',
+    readTime: '7 min read',
+    coverImage: 'https://images.greatwildlifephotos.com/photos/fb-2026-bobcat-in-snow-lbs9571-copy-1781792895936.jpg',
+    category: 'Buying Guide',
+    content: `
+There is a moment that decides whether a wildlife photograph works on your wall: the first time you walk past it without meaning to look at it, and it stops you anyway.
+
+Canvas is unusually good at creating that moment - and unusually easy to get wrong. Here is what actually matters when you are choosing wildlife photos on canvas, from someone who has spent thirty-eight years around the animals in these images.
+
+## Why canvas suits wildlife photography
+
+Canvas has one property that no glass-fronted print can match: **it does not reflect.** There is no sheet of acrylic or glass bouncing your window back at you. You can hang a canvas opposite a bright window and still see the animal.
+
+That matters more for wildlife than for almost any other subject, because so much wildlife photography is made in low, raking light - dawn, dusk, the minutes before a storm. Those are exactly the images that die behind glare.
+
+The weave also does something to fur and feather detail. It softens the transition between tones just slightly, which reads as depth rather than as blur. A bull elk's winter coat, a bighorn's face, the barred pattern on an owl's chest - canvas gives these a physical quality that flat, glossy surfaces flatten out.
+
+Where canvas is **not** the right answer:
+
+- **Images built on specular highlights.** Water spray, ice, wet rock, northern lights on a lake surface. Those want acrylic, which holds a brighter white and a deeper black.
+- **Very small sizes.** Below about 14 inches the texture starts competing with the detail instead of supporting it.
+
+## Sizing: the mistake almost everyone makes
+
+The single most common error is buying too small.
+
+A useful rule: **a print should occupy about two-thirds to three-quarters of the width of the furniture it hangs above.** Over a standard three-seat sofa, that means something in the 30 to 36 inch range - not the 16 inch print that felt "safe" at checkout.
+
+The other half of the rule is viewing distance. Wildlife photographs reward being looked at closely, but they need room to resolve:
+
+| Size | Comfortable viewing distance | Works well |
+|---|---|---|
+| 12" x 8" / 14" x 10" | 2-3 ft | desks, shelves, a gallery cluster |
+| 24" x 16" | 5-6 ft | bedrooms, hallways, an office wall |
+| 30" x 20" | 7-8 ft | above a sofa, a dining wall |
+| 36" x 24" | 8-10 ft | a room's single statement piece |
+
+Canvas prints at Great Wildlife Photos run from 12" x 8" up to 36" x 24". **Available sizes vary by photograph**, and that is deliberate - each image is only offered at sizes its source file can genuinely carry at full quality. If a size is not listed on a product page, it is because that photograph should not be printed that large. You will never be sold a 36 inch print made from a file that cannot hold it.
+
+## Which images print best on canvas
+
+Nine collections are available, and they do not all behave the same way on canvas.
+
+**Strongest on canvas:**
+
+- **Elk** - the rut images, particularly bulls against ridgelines and storm skies. Heavy texture, deep shadow, no specular highlights to lose.
+- **Bighorn Sheep** - red rock and coarse coats. The weave and the subject are doing the same thing.
+- **Bears** - dense fur at close range is exactly what canvas renders well.
+- **Mule Deer** - winter herds and low dawn light.
+- **Wild Horses** - dust, movement, and warm sunset colour.
+
+**Consider acrylic instead:**
+
+- **Lake Tahoe** - the water clarity, lightning and northern lights images depend on brightness and contrast that canvas deliberately softens.
+- **Hawks and Owls** in flight against bright sky, where edge contrast is the point.
+
+## Gallery wrap and framing
+
+Every canvas is a gallery wrap - the image continues around the edge of the stretcher bars, so the print is finished on all four sides and hangs without a frame.
+
+Prints are sold unframed by choice. Framing is a personal decision tied to your room, and a gallery-wrapped canvas is designed to look complete on its own. If you later want to frame one, a floater frame is the conventional choice for canvas and leaves the wrapped edge visible.
+
+## What you are actually buying
+
+Every print is produced to order. Nothing sits in a warehouse. When you order a 30" x 20" canvas of a bull elk, that specific print is made for you on archival-grade inks and materials designed to hold colour for decades out of direct sunlight.
+
+The photographs themselves were made by Lynn Starnes, who spent thirty-eight years as a fish and wildlife biologist - U.S. Fish and Wildlife Service, Tennessee Valley Authority, a master's degree in aquatic ecology - before most people saw any of her images. One of her polar bear photographs was judged in the top 25 of almost 70,000 entries for Nature's Best / Smithsonian in 2018.
+
+That background is the reason these animals look relaxed rather than startled. As she puts it: *"Most tourists who visit America's wild lands rarely have the time to let animals acclimate to their presence, so they rarely see animals being wild, natural, relaxed animals."*
+
+## Where to start
+
+If you are buying your first wildlife canvas print, start with the room rather than the image. Measure the wall, apply the two-thirds rule, and let that decide your size. Then choose the photograph that suits the light in that room - warm and textured for canvas, bright and high-contrast for acrylic.
+
+[Browse the full gallery](/gallery/) to see every photograph and the sizes available for each, or [get in touch](/contact/) if you want a second opinion on sizing before you order.
+`
+  },
+  {
     slug: 'canvas-vs-metal-vs-acrylic-wildlife-photography-prints',
     title: 'Canvas, Metal, or Acrylic? How to Choose the Right Print for Wildlife Photography',
     excerpt: 'Not sure which print material is right for your space? Learn how canvas, metal, and acrylic each bring out different qualities in wildlife photography - and how to choose the perfect one.',
