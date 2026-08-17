@@ -1,150 +1,120 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { Link } from 'react-router-dom';
-import pb from '@/lib/pocketbaseClient';
-import AsyncProductImage from '@/components/AsyncProductImage.jsx';
-import { Loader2, AlertCircle, RefreshCw } from 'lucide-react';
-import { Button } from '@/components/ui/button';
+import { useEffect, useState } from 'react';
+import { Link, useParams, Navigate } from 'react-router-dom';
 import SEO from '@/components/SEO.jsx';
+import { DEFAULT_SEO_IMAGE, baseGraph, breadcrumbSchema, webPageSchema } from '@/lib/seo.js';
+import { COLLECTION_BY_SLUG } from '@/data/collections.js';
 
-const CollectionPage = () => {
-  const [collections, setCollections] = useState([]);
+const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.greatwildlifephotos.com';
+
+// One landing page per catalogue collection.
+//
+// Why these exist: every photograph was reachable only from /gallery/, so all 161
+// product pages hung off a single hub at crawl depth 2 with no topical grouping,
+// and the only per-collection URLs were query strings (/gallery?category=Bears)
+// which canonicalise away and cannot rank. These pages give each collection a real
+// indexable URL, Lynn's own words about the subject, and a direct link to every
+// photograph in it.
+//
+// Copy comes from src/data/collections.js, which the prerender imports too, so the
+// static HTML and the React render cannot drift apart.
+export default function CollectionPage() {
+  const { collectionSlug } = useParams();
+  const collection = COLLECTION_BY_SLUG[collectionSlug];
+
+  const [photos, setPhotos] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-
-  const fetchCollections = useCallback(async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      // 1. Fetch all visible collections
-      const collRecords = await pb.collection('collections').getFullList({
-        filter: 'isVisible=true',
-        sort: '-created', // Sort by creation date as requested
-        $autoCancel: false
-      });
-
-      // 2. For each collection, count products and get a preview image
-      const collectionsData = await Promise.all(
-        collRecords.map(async (col) => {
-          const prodData = await pb.collection('products').getList(1, 1, {
-            filter: `collection="${col.id}" && isVisible=true`,
-            sort: '-created',
-            $autoCancel: false
-          });
-          
-          return {
-            id: col.id,
-            name: col.name,
-            slug: col.slug,
-            description: col.description,
-            count: prodData.totalItems,
-            // Use collection's featured image if available, otherwise fallback to first product's image
-            previewImageId: col.featured_image_id || col.heroImage || (prodData.items.length > 0 ? prodData.items[0].imageFileId : null)
-          };
-        })
-      );
-
-      setCollections(collectionsData);
-    } catch (err) {
-      console.error('Error fetching collections:', err);
-      setError('Failed to load collections. Please try again later.');
-    } finally {
-      setLoading(false);
-    }
-  }, []);
 
   useEffect(() => {
-    fetchCollections();
-  }, [fetchCollections]);
+    if (!collection) return;
+    let cancelled = false;
+    setLoading(true);
+    fetch(`${API_BASE}/products?limit=100&category=${encodeURIComponent(collection.category)}`)
+      .then((r) => r.json())
+      .then((d) => { if (!cancelled) setPhotos((d && d.products) || []); })
+      .catch(() => { if (!cancelled) setPhotos([]); })
+      .finally(() => { if (!cancelled) setLoading(false); });
+    return () => { cancelled = true; };
+  }, [collection]);
 
-  if (loading) {
-    return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center space-y-4">
-        <SEO title="Collections | Great Wildlife Photos" description="Curated wildlife photography print collections by Lynn Starnes." path="/collections" />
-        <Loader2 className="h-8 w-8 animate-spin text-primary" />
-        <p className="text-muted-foreground animate-pulse">Curating collections...</p>
-      </div>
-    );
-  }
+  // An unknown slug is a genuine 404, not a silent homepage — the SPA catch-all
+  // returning 200 for URLs that do not exist has already produced one false
+  // positive during verification on this site.
+  if (!collection) return <Navigate to="/gallery" replace />;
 
-  if (error) {
-    return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
-        <SEO title="Collections | Great Wildlife Photos" description="Curated wildlife photography print collections by Lynn Starnes." path="/collections" robots="noindex,follow" />
-        <AlertCircle className="h-12 w-12 text-destructive mb-4" />
-        <h1 className="text-3xl font-serif font-bold mb-2">Unable to Load Collections</h1>
-        <p className="text-muted-foreground mb-8 max-w-md">{error}</p>
-        <Button onClick={fetchCollections} variant="outline" className="gap-2">
-          <RefreshCw className="h-4 w-4" />
-          Retry
-        </Button>
-      </div>
-    );
-  }
+  const path = `/gallery/${collection.slug}`;
 
   return (
-    <main className="min-h-screen py-16 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <SEO title="Collections | Great Wildlife Photos" description="Explore curated fine art wildlife photography collections by Lynn Starnes." path="/collections" />
+    <div className="w-full">
+      <SEO
+        title={collection.title}
+        description={collection.description}
+        path={path}
+        image={DEFAULT_SEO_IMAGE}
+        schema={[
+          ...baseGraph(),
+          webPageSchema({
+            path,
+            name: collection.title,
+            description: collection.description,
+            type: 'CollectionPage',
+            image: DEFAULT_SEO_IMAGE,
+          }),
+          breadcrumbSchema([
+            { name: 'Home', path: '/' },
+            { name: 'Gallery', path: '/gallery' },
+            { name: collection.name, path },
+          ]),
+        ]}
+      />
 
-      <div className="mb-16 text-center max-w-3xl mx-auto">
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-bold text-balance tracking-tight mb-6">
-          Curated Collections
+      <div className="mx-auto max-w-6xl px-4 py-10">
+        <nav className="mb-6 text-sm text-muted-foreground">
+          <Link to="/gallery" className="hover:underline">Gallery</Link>
+          <span className="mx-2">/</span>
+          <span>{collection.name}</span>
+        </nav>
+
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
+          {collection.name} Photography Prints
         </h1>
-        <p className="text-lg text-muted-foreground leading-relaxed">
-          Discover our finest wildlife photography, thoughtfully organized by species, environment, and thematic series. Find the perfect piece to transform your space.
-        </p>
-      </div>
 
-      {collections.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-24 bg-muted/30 rounded-3xl border border-border/50">
-          <p className="text-xl text-foreground font-medium mb-2">No collections available yet.</p>
-          <p className="text-muted-foreground">We are currently curating new series. Please check back soon.</p>
-        </div>
-      ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
-          {collections.map(col => (
-            <Link key={col.id} to={`/collections/${col.slug}`} className="group flex flex-col h-full">
-              <div className="aspect-[4/3] rounded-2xl overflow-hidden mb-6 bg-muted relative shadow-sm transition-all duration-500 group-hover:shadow-xl group-hover:-translate-y-1">
-                {col.previewImageId ? (
-                  <AsyncProductImage
-                    fileId={col.previewImageId}
-                    alt={col.name}
-                    useWatermark
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-                  />
-                ) : (
-                  <div className="w-full h-full flex items-center justify-center bg-secondary/40 text-muted-foreground">
-                    <span className="text-sm font-medium tracking-wide uppercase">Coming Soon</span>
-                  </div>
-                )}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/0 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                <div className="absolute bottom-6 left-0 right-0 flex justify-center opacity-0 translate-y-4 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-500">
-                  <span className="bg-background/95 backdrop-blur-sm text-foreground px-6 py-2.5 rounded-full text-sm font-semibold tracking-wide shadow-lg">
-                    Explore Series
-                  </span>
-                </div>
-              </div>
-              
-              <div className="flex flex-col flex-grow px-2">
-                <div className="flex justify-between items-start mb-3">
-                  <h3 className="text-2xl font-serif font-bold text-foreground group-hover:text-primary transition-colors leading-tight">
-                    {col.name}
-                  </h3>
-                  <span className="inline-flex items-center rounded-full bg-secondary/60 px-3 py-1 text-xs font-medium text-secondary-foreground tabular-nums tracking-wide shrink-0 ml-4">
-                    {col.count} {col.count === 1 ? 'Print' : 'Prints'}
-                  </span>
-                </div>
-                {col.description && (
-                  <p className="text-muted-foreground line-clamp-2 text-sm leading-relaxed mt-auto">
-                    {col.description}
-                  </p>
-                )}
+        <p className="mt-5 max-w-3xl text-base leading-relaxed text-muted-foreground">
+          {collection.intro}
+        </p>
+
+        <p className="mt-4 text-sm text-muted-foreground">
+          {loading ? 'Loading photographs…' : `${photos.length} photograph${photos.length === 1 ? '' : 's'} in this collection.`}
+        </p>
+
+        <div className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {photos.map((p) => (
+            <Link
+              key={p.id || p.slug}
+              to={`/photo/${p.slug}/`}
+              className="group overflow-hidden rounded-lg border border-border bg-card transition hover:border-primary"
+            >
+              {p.image_url && (
+                <img
+                  src={p.image_url}
+                  alt={`${p.title} — wildlife photography print by Lynn Starnes`}
+                  loading="lazy"
+                  className="aspect-[4/3] w-full object-cover transition group-hover:scale-[1.02]"
+                />
+              )}
+              <div className="p-3">
+                <h2 className="text-sm font-medium">{p.title}</h2>
               </div>
             </Link>
           ))}
         </div>
-      )}
-    </main>
-  );
-};
 
-export default CollectionPage;
+        {!loading && photos.length === 0 && (
+          <p className="mt-8 text-muted-foreground">
+            No photographs are listed in this collection yet.{' '}
+            <Link to="/gallery" className="text-primary hover:underline">Browse the full gallery</Link>.
+          </p>
+        )}
+      </div>
+    </div>
+  );
+}

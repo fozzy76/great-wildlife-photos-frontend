@@ -5,6 +5,7 @@ import ScrollToTop from '@/components/ScrollToTop.jsx';
 import Header from '@/components/Header.jsx';
 import Footer from '@/components/Footer.jsx';
 import HomePage from '@/pages/HomePage.jsx';
+import CollectionPage from '@/pages/CollectionPage.jsx';
 import GalleryPage from '@/pages/GalleryPage.jsx';
 import PhotoDetailPage from '@/pages/PhotoDetailPage.jsx';
 import CartPage from '@/pages/CartPage.jsx';
@@ -41,6 +42,9 @@ function App() {
                   <Routes>
                     <Route path="/" element={<HomePage />} />
                     <Route path="/gallery" element={<GalleryPage />} />
+                    {/* Collection landing pages — real indexable URLs per category.
+                        Declared after /gallery; React Router ranks the static segment first. */}
+                    <Route path="/gallery/:collectionSlug" element={<CollectionPage />} />
                     <Route path="/photo/:slug" element={<PhotoDetailPage />} />
                     <Route path="/blog" element={<BlogPage />} />
                     <Route path="/blog/:slug" element={<BlogPostPage />} />

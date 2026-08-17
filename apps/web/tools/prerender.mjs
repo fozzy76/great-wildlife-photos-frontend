@@ -31,10 +31,12 @@ const blogMod = await import(toUrl(path.join(webRoot, 'src/data/blogPosts.js')))
 const blogPosts = blogMod.blogPosts || blogMod.default;
 const aboutMod = await import(toUrl(path.join(webRoot, 'src/data/aboutContent.js')));
 const faqMod = await import(toUrl(path.join(webRoot, 'src/data/faqs.js')));
+const collectionsMod = await import(toUrl(path.join(webRoot, 'src/data/collections.js')));
+const COLLECTIONS = collectionsMod.COLLECTIONS || collectionsMod.default;
 
 const {
   absoluteUrl, truncateText, baseGraph, webPageSchema, breadcrumbSchema,
-  articleSchema, productSchema, SITE_NAME,
+  articleSchema, productSchema, SITE_NAME, DEFAULT_SEO_IMAGE,
 } = seo;
 const { STATIC_ROUTES, blogMeta, photoMeta, NOINDEX_ROUTES, NOINDEX_META } = routeMeta;
 
@@ -223,10 +225,43 @@ function galleryBody(products) {
       <h1>Wildlife Photography Print Gallery</h1>
       <p>${products.length} fine art wildlife and landscape photographs by Lynn Starnes, available as
       canvas, acrylic and aluminium prints.</p>
-      ${cats.length ? `<h2>Collections</h2>\n      <ul>\n        ${cats.map((c) => `<li>${esc(c)}</li>`).join('\n        ')}\n      </ul>` : ''}
+      ${cats.length ? `<h2>Collections</h2>\n      <ul>\n        ${cats.map((c) => {
+        // Link to the collection landing page where one exists, so /gallery/ is a
+        // hub rather than a dead end. Bare text was leaving every category name
+        // unlinked and the whole catalogue hanging off this one page.
+        const col = COLLECTIONS.find((x) => x.category === c);
+        return col ? `<li><a href="/gallery/${esc(col.slug)}/">${esc(col.name)}</a></li>` : `<li>${esc(c)}</li>`;
+      }).join('\n        ')}\n      </ul>` : ''}
       <h2>All photographs</h2>
       <ul>
         ${items}
+      </ul>
+    </main>
+  `);
+}
+
+// Collection landing page body. Every photograph in the collection is linked, so a
+// non-JS crawler reaches the whole catalogue through nine topical hubs instead of
+// one flat /gallery/ page — which is the reason these pages exist.
+function collectionBody(collection, items) {
+  const links = items.map((p) =>
+    `<li><a href="/photo/${esc(p.slug)}/">${esc(p.title)}</a></li>`
+  ).join('\n        ');
+  const others = COLLECTIONS.filter((c) => c.slug !== collection.slug)
+    .map((c) => `<li><a href="/gallery/${esc(c.slug)}/">${esc(c.name)}</a></li>`).join('\n        ');
+  return bodyBlock(`
+    <main>
+      <h1>${esc(collection.name)} Photography Prints</h1>
+      <p>${esc(collection.intro)}</p>
+      <p>${items.length} photograph${items.length === 1 ? '' : 's'} in this collection, available as
+      canvas, acrylic and aluminium prints.</p>
+      <h2>Photographs in this collection</h2>
+      <ul>
+        ${links}
+      </ul>
+      <h2>Other collections</h2>
+      <ul>
+        ${others}
       </ul>
     </main>
   `);
@@ -482,6 +517,59 @@ async function main() {
     );
     console.log(`prerender: wrote blog-index.json (${blogPosts.length} posts)`);
   } catch (e) { console.warn('blog-index.json write failed:', e.message); }
+
+  // 4b. Collection landing pages — one real URL per catalogue category.
+  //
+  // Before these existed the only per-collection URLs were query strings
+  // (/gallery?category=Bears), which canonicalise to /gallery and therefore cannot
+  // rank, and every product page hung off /gallery alone. Products are grouped from
+  // the list already fetched above — no extra API calls, and the counts cannot
+  // disagree with what the pages actually link to.
+  const collectionCounts = [];
+  for (const collection of COLLECTIONS) {
+    const items = products.filter((p) => p && p.category === collection.category);
+    if (!items.length) {
+      // A collection with no photographs would be a thin page inviting a crawler in
+      // for nothing. Skip it rather than publish it.
+      console.warn(`prerender: collection "${collection.category}" has 0 products — page skipped`);
+      continue;
+    }
+    const cp = `/gallery/${collection.slug}`;
+    const meta = {
+      title: collection.title,
+      description: collection.description,
+      path: cp,
+      image: DEFAULT_SEO_IMAGE,
+      type: 'website',
+      // headBlock always writes a robots tag, so omitting this shipped
+      // content="" on all nine pages. Caught by checking the built HTML.
+      robots: 'index,follow',
+    };
+    const graph = [
+      ...baseGraph(),
+      webPageSchema({ path: cp, name: collection.title, description: collection.description, type: 'CollectionPage', image: DEFAULT_SEO_IMAGE }),
+      breadcrumbSchema([
+        { name: 'Home', path: '/' },
+        { name: 'Gallery', path: '/gallery' },
+        { name: collection.name, path: cp },
+      ]),
+    ];
+    writeRoute(cp, renderRoute(template, meta, graph, collectionBody(collection, items)));
+    collectionCounts.push({ slug: collection.slug, category: collection.category, count: items.length });
+    count++;
+  }
+  console.log(`prerender: wrote ${collectionCounts.length} collection pages (${collectionCounts.map((c) => `${c.slug}:${c.count}`).join(', ')})`);
+
+  // Publish the collection index so the backend sitemap can list these URLs, the
+  // same mechanism used for blog posts — the sitemap lives in the API repo and must
+  // not carry a hardcoded list that silently goes stale.
+  try {
+    fs.writeFileSync(
+      path.join(outputDir, 'collections-index.json'),
+      JSON.stringify(collectionCounts.map((c) => ({ slug: c.slug, count: c.count })), null, 1)
+    );
+    console.log(`prerender: wrote collections-index.json (${collectionCounts.length} collections)`);
+  } catch (e) { console.warn('collections-index.json write failed:', e.message); }
 
   if (galleryDeferred && products.length) {
     galleryBodyHtml = galleryBody(products);
