@@ -7,6 +7,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Skeleton } from '@/components/ui/skeleton.jsx';
 import { cn } from '@/lib/utils.js';
 import SEO from '@/components/SEO.jsx';
+import { COLLECTION_BY_CATEGORY } from '@/data/collections.js';
 import { DEFAULT_SEO_IMAGE, SITE_URL, baseGraph, breadcrumbSchema, webPageSchema } from '@/lib/seo.js';
 
 const API_BASE = 'https://api.greatwildlifephotos.com';
@@ -293,7 +294,16 @@ const GalleryPage = () => {
                 return (
                   <Link
                     key={category}
-                    to={buildGalleryPath({ category, page: 1 })}
+                    // Point at the real collection page where one exists. The query-string
+                    // form still works and still canonicalises to /gallery/, but it cannot
+                    // rank; /gallery/<slug>/ has its own title, copy and canonical. This also
+                    // gives the new collection pages internal links from the page users
+                    // actually browse.
+                    to={category === 'all'
+                      ? buildGalleryPath({ category: 'all', page: 1 })
+                      : (COLLECTION_BY_CATEGORY[category]
+                          ? `/gallery/${COLLECTION_BY_CATEGORY[category].slug}`
+                          : buildGalleryPath({ category, page: 1 }))}
                     className={cn(
                       'rounded-md border px-3 py-1.5 text-sm font-medium transition-colors',
                       isActive

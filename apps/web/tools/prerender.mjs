@@ -334,8 +334,19 @@ function blogIndexBodyHtml() {
   `);
 }
 
-function homeBodyHtml() {
+function homeBodyHtml(products = []) {
   const m = STATIC_ROUTES['/'] || {};
+  const featured = products.slice(0, 24);
+  const SEP = '\n        ';
+  const collectionLinks = COLLECTIONS
+    .map((c) => `<li><a href="/gallery/${esc(c.slug)}/">${esc(c.name)} prints</a></li>`)
+    .join(SEP);
+  const featuredLinks = featured
+    .map((p) => `<li><a href="/photo/${esc(p.slug)}/">${esc(p.title)}</a>${p.category ? ` &mdash; ${esc(p.category)}` : ''}</li>`)
+    .join(SEP);
+  const featuredBlock = featured.length
+    ? `<h2>Featured photographs</h2>${SEP}<ul>${SEP}${featuredLinks}${SEP}</ul>`
+    : '';
   return bodyBlock(`
     <main>
       <h1>${esc(m.title || 'Great Wildlife Photos')}</h1>
@@ -347,12 +358,19 @@ function homeBodyHtml() {
       Nature's Best / Smithsonian in 2018.</p>
       <h2>Collections</h2>
       <ul>
+        ${collectionLinks}
+      </ul>
+      ${featuredBlock}
+      <h2>More</h2>
+      <ul>
         <li><a href="/gallery/">Browse every wildlife print</a></li>
         <li><a href="/about/">About Lynn Starnes</a></li>
         <li><a href="/faq/">Print materials, sizes and shipping</a></li>
         <li><a href="/blog/">Field notes and print guides</a></li>
+        <li><a href="/shipping/">Shipping</a></li>
+        <li><a href="/returns/">Returns &amp; refunds</a></li>
+        <li><a href="/license/">Image licensing</a></li>
       </ul>
-      <p>Browse published wildlife prints one image at a time. Ready to bring the wild home?</p>
     </main>
   `);
 }
@@ -394,7 +412,6 @@ function policyBody(policy) {
 }
 
 const STATIC_BODY = {
-  '/': homeBodyHtml,
   '/about': aboutBodyHtml,
   '/faq': faqBodyHtml,
   '/blog': blogIndexBodyHtml,
@@ -454,6 +471,7 @@ async function main() {
   // The gallery listing needs the product catalogue, which is fetched further
   // down. Capture its meta here and rewrite that one file once we have it.
   let galleryBodyHtml = '';
+  let homeDeferred = null;
   let galleryDeferred = null;
 
   // 1. Static routes (including home — overwrites the shell with uniform meta)
@@ -464,6 +482,7 @@ async function main() {
       breadcrumbSchema(BREADCRUMBS[p] || [{ name: 'Home', path: '/' }]),
     ];
     if (p === '/gallery') galleryDeferred = { p, meta, graph };
+    if (p === '/') homeDeferred = { p, meta, graph };
     const staticBody = STATIC_BODY[p] ? STATIC_BODY[p]() : '';
     writeRoute(p, renderRoute(template, meta, graph, staticBody));
     count++;
@@ -595,6 +614,14 @@ async function main() {
     );
     console.log(`prerender: wrote collections-index.json (${collectionCounts.length} collections)`);
   } catch (e) { console.warn('collections-index.json write failed:', e.message); }
+
+  // The homepage body links the nine collections and the first 24 photographs, so it
+  // is rewritten here once products are available — it previously linked no images at
+  // all and carried ~118 crawlable words.
+  if (homeDeferred) {
+    writeRoute('/', renderRoute(template, homeDeferred.meta, homeDeferred.graph, homeBodyHtml(products)));
+    console.log(`prerender: home rewritten with ${COLLECTIONS.length} collections + ${Math.min(products.length,24)} featured photos`);
+  }
 
   if (galleryDeferred && products.length) {
     galleryBodyHtml = galleryBody(products);
