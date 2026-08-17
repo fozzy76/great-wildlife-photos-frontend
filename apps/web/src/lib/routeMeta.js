@@ -57,6 +57,24 @@ export const STATIC_ROUTES = {
     type: 'website',
     robots: INDEX,
   },
+  '/shipping': {
+    title: 'Shipping | Great Wildlife Photos',
+    description:
+      'How Great Wildlife Photos prints are made and delivered — printed to order in the USA, typically delivered in 4 business days, shipped by UPS, FedEx or DHL.',
+    path: '/shipping',
+    image: DEFAULT_SEO_IMAGE,
+    type: 'website',
+    robots: INDEX,
+  },
+  '/returns': {
+    title: 'Returns & Refunds | Great Wildlife Photos',
+    description:
+      'Returns and refunds at Great Wildlife Photos. Prints are made to order, so we do not accept change-of-mind returns — but damaged, defective or incorrect orders are replaced free of charge.',
+    path: '/returns',
+    image: DEFAULT_SEO_IMAGE,
+    type: 'website',
+    robots: INDEX,
+  },
   '/contact': {
     title: 'Contact Lynn Starnes | Great Wildlife Photos',
     description:

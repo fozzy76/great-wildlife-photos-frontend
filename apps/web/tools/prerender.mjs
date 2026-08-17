@@ -33,6 +33,8 @@ const aboutMod = await import(toUrl(path.join(webRoot, 'src/data/aboutContent.js
 const faqMod = await import(toUrl(path.join(webRoot, 'src/data/faqs.js')));
 const collectionsMod = await import(toUrl(path.join(webRoot, 'src/data/collections.js')));
 const COLLECTIONS = collectionsMod.COLLECTIONS || collectionsMod.default;
+const policiesMod = await import(toUrl(path.join(webRoot, 'src/data/policies.js')));
+const { shippingPolicy, returnsPolicy } = policiesMod;
 
 const {
   absoluteUrl, truncateText, baseGraph, webPageSchema, breadcrumbSchema,
@@ -61,6 +63,8 @@ const BREADCRUMBS = {
   '/blog': [{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog' }],
   '/privacy': [{ name: 'Home', path: '/' }],
   '/terms': [{ name: 'Home', path: '/' }],
+  '/shipping': [{ name: 'Home', path: '/' }, { name: 'Shipping', path: '/shipping' }],
+  '/returns': [{ name: 'Home', path: '/' }, { name: 'Returns & Refunds', path: '/returns' }],
 };
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -371,12 +375,31 @@ function contactBodyHtml() {
   `);
 }
 
+// Shipping / Returns bodies, from the same module the React pages render from.
+function policyBody(policy) {
+  const secs = policy.sections
+    .map((sec) => {
+      const paras = sec.body.map((b) => `<p>${esc(b)}</p>`).join('\n      ');
+      return `<h2>${esc(sec.heading)}</h2>\n      ${paras}`;
+    })
+    .join('\n      ');
+  return bodyBlock(`
+    <main>
+      <h1>${esc(policy.heading)}</h1>
+      <p>${esc(policy.intro)}</p>
+      ${secs}
+    </main>
+  `);
+}
+
 const STATIC_BODY = {
   '/': homeBodyHtml,
   '/about': aboutBodyHtml,
   '/faq': faqBodyHtml,
   '/blog': blogIndexBodyHtml,
   '/contact': contactBodyHtml,
+  '/shipping': () => policyBody(shippingPolicy),
+  '/returns': () => policyBody(returnsPolicy),
 };
 
 function renderRoute(template, meta, schemaGraph, body) {

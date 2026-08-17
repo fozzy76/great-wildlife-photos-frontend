@@ -6,6 +6,8 @@ import Header from '@/components/Header.jsx';
 import Footer from '@/components/Footer.jsx';
 import HomePage from '@/pages/HomePage.jsx';
 import CollectionPage from '@/pages/CollectionPage.jsx';
+import PolicyPage from '@/pages/PolicyPage.jsx';
+import { shippingPolicy, returnsPolicy } from '@/data/policies.js';
 import GalleryPage from '@/pages/GalleryPage.jsx';
 import PhotoDetailPage from '@/pages/PhotoDetailPage.jsx';
 import CartPage from '@/pages/CartPage.jsx';
@@ -56,6 +58,10 @@ function App() {
                     <Route path="/contact" element={<ContactPage />} />
                     <Route path="/about" element={<AboutPage />} />
                     <Route path="/faq" element={<FAQPage />} />
+              {/* Shipping and Returns — required for Google Merchant Center, and the only
+                  statement of either previously lived inside the FAQ accordion. */}
+              <Route path="/shipping" element={<PolicyPage policy={shippingPolicy} />} />
+              <Route path="/returns" element={<PolicyPage policy={returnsPolicy} />} />
                     <Route path="/privacy" element={<PrivacyPage />} />
                     <Route path="/terms" element={<TermsPage />} />
                     <Route path="*" element={<HomePage />} />
