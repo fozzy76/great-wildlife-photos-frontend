@@ -34,11 +34,11 @@ const faqMod = await import(toUrl(path.join(webRoot, 'src/data/faqs.js')));
 const collectionsMod = await import(toUrl(path.join(webRoot, 'src/data/collections.js')));
 const COLLECTIONS = collectionsMod.COLLECTIONS || collectionsMod.default;
 const policiesMod = await import(toUrl(path.join(webRoot, 'src/data/policies.js')));
-const { shippingPolicy, returnsPolicy } = policiesMod;
+const { shippingPolicy, returnsPolicy, licensePolicy } = policiesMod;
 
 const {
   absoluteUrl, truncateText, baseGraph, webPageSchema, breadcrumbSchema,
-  articleSchema, productSchema, SITE_NAME, DEFAULT_SEO_IMAGE,
+  articleSchema, productSchema, imageObjectSchema, SITE_NAME, DEFAULT_SEO_IMAGE,
 } = seo;
 const { STATIC_ROUTES, blogMeta, photoMeta, NOINDEX_ROUTES, NOINDEX_META } = routeMeta;
 
@@ -65,6 +65,7 @@ const BREADCRUMBS = {
   '/terms': [{ name: 'Home', path: '/' }],
   '/shipping': [{ name: 'Home', path: '/' }, { name: 'Shipping', path: '/shipping' }],
   '/returns': [{ name: 'Home', path: '/' }, { name: 'Returns & Refunds', path: '/returns' }],
+  '/license': [{ name: 'Home', path: '/' }, { name: 'Image Licensing', path: '/license' }],
 };
 
 const esc = (s) => String(s ?? '').replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
@@ -400,6 +401,7 @@ const STATIC_BODY = {
   '/contact': contactBodyHtml,
   '/shipping': () => policyBody(shippingPolicy),
   '/returns': () => policyBody(returnsPolicy),
+  '/license': () => policyBody(licensePolicy),
 };
 
 function renderRoute(template, meta, schemaGraph, body) {
@@ -620,6 +622,9 @@ async function main() {
       ...baseGraph(),
       webPageSchema({ path: cp, name: meta.title, description: meta.description, type: 'ItemPage', image: meta.image }),
       productSchema({ photo, offerPrices, canonicalPath: cp }),
+      // Licensable-image metadata — see seo.js. Returns null if the photo has no
+      // image URL; baseGraph consumers filter falsy nodes.
+      imageObjectSchema({ photo, canonicalPath: cp }),
       breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Gallery', path: '/gallery' }, { name: photo.title, path: cp }]),
     ];
     writeRoute(cp, renderRoute(template, meta, graph, photoBody(photo, offerPrices, cp)));

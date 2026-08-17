@@ -7,7 +7,7 @@ import Footer from '@/components/Footer.jsx';
 import HomePage from '@/pages/HomePage.jsx';
 import CollectionPage from '@/pages/CollectionPage.jsx';
 import PolicyPage from '@/pages/PolicyPage.jsx';
-import { shippingPolicy, returnsPolicy } from '@/data/policies.js';
+import { shippingPolicy, returnsPolicy, licensePolicy } from '@/data/policies.js';
 import GalleryPage from '@/pages/GalleryPage.jsx';
 import PhotoDetailPage from '@/pages/PhotoDetailPage.jsx';
 import CartPage from '@/pages/CartPage.jsx';
@@ -62,6 +62,7 @@ function App() {
                   statement of either previously lived inside the FAQ accordion. */}
               <Route path="/shipping" element={<PolicyPage policy={shippingPolicy} />} />
               <Route path="/returns" element={<PolicyPage policy={returnsPolicy} />} />
+              <Route path="/license" element={<PolicyPage policy={licensePolicy} />} />
                     <Route path="/privacy" element={<PrivacyPage />} />
                     <Route path="/terms" element={<TermsPage />} />
                     <Route path="*" element={<HomePage />} />

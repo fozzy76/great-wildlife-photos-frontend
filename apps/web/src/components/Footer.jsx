@@ -71,6 +71,7 @@ const Footer = () => {
                   previously the only statement of it was hidden inside the FAQ accordion. */}
               <Link to="/shipping" style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px', textDecoration: 'none' }}>Shipping</Link>
               <Link to="/returns" style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px', textDecoration: 'none' }}>Returns &amp; Refunds</Link>
+              <Link to="/license" style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px', textDecoration: 'none' }}>Image Licensing</Link>
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginLeft: '8px' }}>
                 {[['#', Facebook], ['#', Instagram], ['#', Twitter]].map(([href, Icon], i) => (
                   <a key={i} href={href} style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'all 0.2s' }}

@@ -122,6 +122,41 @@ export const faqSchema = (sections = []) => ({
   }))
 });
 
+// Image licence metadata — this is what makes a photograph eligible for the
+// "Licensable" badge in Google Images, with a link through to where a licence can
+// be obtained. It is the single most relevant Google feature for a photographer
+// selling their own work, and the site published none of it: measured 2026-08-17,
+// Google Images gave 460 impressions, 0 clicks, average position 80.
+//
+// Google's image-licence structured data requires an ImageObject carrying
+// contentUrl plus `license` (a page describing the licence) and/or
+// `acquireLicensePage` (a page telling the user how to obtain one). creator,
+// creditText and copyrightNotice are supported alongside and are all true here.
+//
+// The terms these point at are Lynn's own, from the FAQ: buying a print grants
+// display rights only, and editorial/press/commercial licences are considered
+// individually on request — so the badge is honest, not decorative.
+export const LICENSE_PATH = '/license';
+
+export const imageObjectSchema = ({ photo, canonicalPath }) => {
+  const imageUrl = photo?.r2_url || photo?.photo_url;
+  if (!imageUrl) return null;
+  return {
+    '@type': 'ImageObject',
+    '@id': `${absoluteUrl(canonicalPath)}#image`,
+    contentUrl: imageUrl,
+    url: imageUrl,
+    name: photo?.title,
+    description: truncateText(photo?.description || `${photo?.title} — wildlife photograph by Lynn Starnes.`, 500),
+    license: absoluteUrl(LICENSE_PATH),
+    acquireLicensePage: absoluteUrl(LICENSE_PATH),
+    creditText: 'Lynn Starnes',
+    creator: { '@type': 'Person', name: 'Lynn Starnes' },
+    copyrightNotice: '© Lynn Starnes',
+    creditedTo: { '@type': 'Person', name: 'Lynn Starnes' },
+  };
+};
+
 export const productSchema = ({ photo, offerPrices = [], canonicalPath }) => {
   const imageUrl = photo?.r2_url || photo?.photo_url || DEFAULT_SEO_IMAGE;
   const prices = offerPrices

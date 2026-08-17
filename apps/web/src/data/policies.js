@@ -118,7 +118,67 @@ export const returnsPolicy = {
   ],
 };
 
-export const POLICIES = [shippingPolicy, returnsPolicy];
+
+// Image licensing. Required by Google's image-licence structured data: `license`
+// must point at a page describing the licence, and `acquireLicensePage` at a page
+// telling the user how to obtain one. Publishing those makes the photographs
+// eligible for the "Licensable" badge in Google Images — the surface that matters
+// most for a photographer and where this site currently ranks around position 80.
+//
+// 🔴 The terms below are Lynn's own, taken from the FAQ verbatim in substance:
+//   "Purchasing a print gives you the right to display that print in your home or
+//    business. It does not grant any digital rights, reproduction rights, or
+//    licensing rights. For licensing inquiries, contact Lynn directly."
+//   "For editorial, press, or licensing inquiries, contact Lynn at
+//    lynn@greatwildlifephotos.com. She considers each request individually."
+//
+// ⚠ One thing deliberately NOT carried over: the FAQ says "Every image is
+// trademarked and protected under US copyright law." Photographs are protected by
+// copyright, not trademark, and repeating that on a page whose whole purpose is to
+// state rights accurately would undermine it. The copyright claim is stated
+// plainly instead. The FAQ wording is untouched — flagged for Lynn, not edited.
+export const LICENSING_EMAIL = 'lynn@greatwildlifephotos.com';
+
+export const licensePolicy = {
+  slug: 'license',
+  title: 'Image Licensing & Copyright | Great Wildlife Photos',
+  description:
+    "Copyright and image licensing for Lynn Starnes wildlife photography. Prints are sold for display; editorial, press and commercial licences are considered individually.",
+  heading: 'Image Licensing & Copyright',
+  intro:
+    'Every photograph on this site was taken by Lynn Starnes and remains her copyright. This page sets out what buying a print gives you, and how to license an image for any use beyond that.',
+  sections: [
+    {
+      heading: 'Copyright',
+      body: [
+        'All photographs are © Lynn Starnes. All rights reserved. They are protected under United States copyright law.',
+        'Unauthorised reproduction, download, redistribution or commercial use of any image is not permitted.',
+      ],
+    },
+    {
+      heading: 'What buying a print gives you',
+      body: [
+        'Purchasing a print gives you the right to display that print in your home or your business, for as long as you like.',
+        "It does not grant digital rights, reproduction rights, or licensing rights. The print is yours; the image remains hers.",
+      ],
+    },
+    {
+      heading: 'Licensing an image',
+      body: [
+        'Editorial, press, publishing and commercial licences are available. Lynn considers each request individually, because the right terms depend on where and how the photograph will be used.',
+        `To enquire, email ${LICENSING_EMAIL} with the photograph you have in mind and a short description of the intended use — publication, print run, territory and duration if you know them. You will get a direct answer from the photographer, not a form.`,
+      ],
+    },
+    {
+      heading: 'About the work',
+      body: [
+        "Lynn Starnes has photographed North American wildlife across three decades and in extreme conditions. Her polar bear images were named Top 25 in Nature's Best Photography in 2018, an international competition judged in partnership with the Smithsonian Institution.",
+      ],
+    },
+  ],
+};
+
+export const POLICIES = [shippingPolicy, returnsPolicy, licensePolicy];
 export const POLICY_BY_SLUG = Object.fromEntries(POLICIES.map((p) => [p.slug, p]));
 
 export default POLICIES;

@@ -66,6 +66,15 @@ export const STATIC_ROUTES = {
     type: 'website',
     robots: INDEX,
   },
+  '/license': {
+    title: 'Image Licensing & Copyright | Great Wildlife Photos',
+    description:
+      "Copyright and image licensing for Lynn Starnes wildlife photography. Prints are sold for display; editorial, press and commercial licences are considered individually.",
+    path: '/license',
+    image: DEFAULT_SEO_IMAGE,
+    type: 'website',
+    robots: INDEX,
+  },
   '/returns': {
     title: 'Returns & Refunds | Great Wildlife Photos',
     description:
