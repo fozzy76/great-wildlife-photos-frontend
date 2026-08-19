@@ -198,15 +198,61 @@ function bodyBlock(html) {
 
 const money = (n) => `$${Number(n).toFixed(2)}`;
 
-function photoBody(photo, offerPrices, canonicalPath) {
+// Material summaries. Deliberately factual and short, and consistent with the wording
+// already published in the canvas-vs-metal-vs-acrylic blog post — that post is one of
+// the few pages on the site earning clicks, so the page links to it rather than
+// restating it at length. NOT written in Lynn's voice: these describe the product, not
+// the photograph or the photographer. Same authorship boundary as collections.js.
+const MATERIAL_COPY = {
+  canvas: 'Printed on artist-grade cotton canvas and stretched over a wooden frame. The surface is matte and non-reflective, so it holds up on a wall facing a window.',
+  metal: 'Dye-sublimated into an aluminium panel. Colors stay luminous and blacks stay deep, with a slight sheen that suits high-contrast images.',
+  acrylic: 'Face-mounted behind optical-quality acrylic. The acrylic deepens color and adds visible depth, and suits images built on bright highlights — snow, water, ice.',
+};
+const MATERIAL_LABEL = { canvas: 'Canvas', metal: 'Metal (aluminium)', acrylic: 'Acrylic' };
+
+function photoBody(photo, offerPrices, canonicalPath, priceTable = [], allProducts = []) {
   const img = photo.r2_url || photo.photo_url || '';
   const prices = offerPrices.filter((n) => Number.isFinite(n) && n > 0);
   const lo = prices.length ? Math.min(...prices) : null;
   const hi = prices.length ? Math.max(...prices) : null;
+
+  // Print options, stated as a buyer actually chooses them: material, then size, then
+  // price. 141 of 161 photographs currently offer a single size, so this renders a
+  // short honest list rather than implying a range that is not on offer.
+  const optionsHtml = priceTable.length
+    ? priceTable.map((m) => `
+        <h3>${esc(MATERIAL_LABEL[m.material] || m.material)}</h3>
+        ${MATERIAL_COPY[m.material] ? `<p>${esc(MATERIAL_COPY[m.material])}</p>` : ''}
+        <ul>
+          ${m.sizes.map((s) => `<li>${esc(s.name)} &mdash; ${money(s.price)}</li>`).join('\n          ')}
+        </ul>`).join('\n      ')
+    : '';
+
+  // Siblings from the same collection. Before this, every photo page was a dead end:
+  // photographs were linked FROM /gallery/ and the collection hubs but never to each
+  // other, so the only crawl path to a photograph was through one of ten pages. Half
+  // the catalogue was never crawled (GSC URL Inspection, 2026-08-19). These lateral
+  // links give Googlebot a route in from any of 160 other product pages.
+  const collection = photo.category
+    ? COLLECTIONS.find((c) => c.category === photo.category)
+    : null;
+  const siblings = photo.category
+    ? allProducts.filter((p) => p && p.category === photo.category && p.slug !== photo.slug).slice(0, 8)
+    : [];
+  const siblingsHtml = siblings.length
+    ? `
+      <h2>More from the ${esc(photo.category)} collection</h2>
+      <ul>
+        ${siblings.map((p) => `<li><a href="/photo/${esc(p.slug)}/">${esc(p.title)}</a></li>`).join('\n        ')}
+      </ul>
+      ${collection ? `<p><a href="/gallery/${esc(collection.slug)}/">View all ${esc(photo.category)} photography prints</a></p>` : ''}`
+    : '';
+
   return bodyBlock(`
     <article>
       <nav aria-label="Breadcrumb">
         <a href="/">Home</a> &rsaquo; <a href="/gallery/">Gallery</a> &rsaquo;
+        ${collection ? `<a href="/gallery/${esc(collection.slug)}/">${esc(photo.category)}</a> &rsaquo;` : ''}
         <span>${esc(photo.title)}</span>
       </nav>
       <h1>${esc(photo.title)}</h1>
@@ -215,7 +261,18 @@ function photoBody(photo, offerPrices, canonicalPath) {
       ${photo.description ? `<p>${esc(photo.description)}</p>` : ''}
       ${lo !== null ? `<p><strong>Fine art prints from ${money(lo)}${hi && hi > lo ? ` to ${money(hi)}` : ''}</strong> — available on canvas, acrylic and aluminium.</p>` : ''}
       <p>Photographed by Lynn Starnes. Every print is produced to order on museum-quality materials.</p>
-      <p><a href="${esc(canonicalPath)}/">View print options and pricing</a></p>
+
+      ${optionsHtml ? `<h2>Print options and pricing</h2>\n      ${optionsHtml}` : ''}
+      <p><a href="${esc(canonicalPath)}/">View print options and pricing</a> &middot;
+         <a href="/blog/canvas-vs-metal-vs-acrylic-wildlife-photography-prints/">How to choose between canvas, metal and acrylic</a></p>
+
+      <h2>Shipping, returns and licensing</h2>
+      <p>Prints are produced to order in the United States and dispatched from Columbus, Ohio or
+         Phoenix, Arizona. See <a href="/shipping/">shipping</a> and <a href="/returns/">returns</a>
+         for delivery times and the damage-report window.</p>
+      <p>This photograph is available for editorial, press and commercial licensing &mdash; see
+         <a href="/license/">image licensing and copyright</a>.</p>
+      ${siblingsHtml}
     </article>
   `);
 }
@@ -633,16 +690,28 @@ async function main() {
     if (!photo || !photo.slug) return;
     const cp = `/photo/${photo.slug}`;
     const meta = photoMeta(photo);
-    // Fetch variant prices with graceful fallback (no prices → offers w/o low/high)
+    // Fetch variant prices with graceful fallback (no prices → offers w/o low/high).
+    // priceTable keeps the material/size structure that offerPrices flattens away, so the
+    // page body can state what a buyer actually chooses between instead of only a range.
     let offerPrices = [];
+    let priceTable = [];
     try {
       const v = await fetchJson(`${API_BASE}/catalog/variants/compatible/${photo.id}`);
       if (v && v.variants) {
         const basePrice = parseFloat(photo.base_price) || 0;
+        const priceOf = (s) => (s?.wholesale || 0) * (1 + markupPct / 100) + basePrice;
         offerPrices = Object.values(v.variants)
           .flatMap((m) => m?.sizes || [])
-          .map((s) => (s?.wholesale || 0) * (1 + markupPct / 100) + basePrice)
+          .map(priceOf)
           .filter((n) => Number.isFinite(n) && n > 0);
+        priceTable = Object.entries(v.variants)
+          .map(([material, m]) => ({
+            material,
+            sizes: (m?.sizes || [])
+              .map((s) => ({ name: s?.name, price: priceOf(s) }))
+              .filter((s) => s.name && Number.isFinite(s.price) && s.price > 0),
+          }))
+          .filter((m) => m.sizes.length);
       }
     } catch (e) { /* leave offerPrices empty — productSchema handles it */ }
     const graph = [
@@ -654,7 +723,7 @@ async function main() {
       imageObjectSchema({ photo, canonicalPath: cp }),
       breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Gallery', path: '/gallery' }, { name: photo.title, path: cp }]),
     ];
-    writeRoute(cp, renderRoute(template, meta, graph, photoBody(photo, offerPrices, cp)));
+    writeRoute(cp, renderRoute(template, meta, graph, photoBody(photo, offerPrices, cp, priceTable, products)));
     count++;
   });
 
