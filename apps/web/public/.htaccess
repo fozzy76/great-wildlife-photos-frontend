@@ -19,7 +19,26 @@
 	RewriteRule ^(gallery|cart|checkout|order-success|order-receipt|contact|about|faq|privacy|terms|blog)(/.*)?$ /index.html [L]
 	RewriteRule ^photo/[^/]+/?$ /index.html [L]
 	RewriteRule ^confirmation/[^/]+/?$ /index.html [L]
-	RewriteRule ^.+$ / [R=301,L]
+
+	# A URL that does not exist must return 404 — not a redirect to the homepage.
+	#
+	# This rule previously read: RewriteRule ^.+$ / [R=301,L]
+	# i.e. EVERY unknown path 301'd to /. That is the pattern Google documents as a
+	# soft 404: the engine asks for a page that is gone, is sent to the homepage, and
+	# records it as a soft error rather than a clean removal. It also means a user who
+	# mistypes a URL is silently dumped on the homepage with no indication anything
+	# was wrong. Measured 2026-08-26: /definitely-not-real-xyz123,
+	# /shop/nonexistent-product-abc and /blog/no-such-post all resolved 200.
+	#
+	# ErrorDocument serves the SPA shell so the 404 is branded — React Router's
+	# catch-all route renders NotFound — while the HTTP status is honestly 404.
+	#
+	# ⚠ Real routes are NOT affected: the -f/-d test above already short-circuits
+	# every prerendered page and asset (all 189 of them, including /license,
+	# /returns and /shipping, which are prerendered directories rather than
+	# allowlisted above), and the SPA allowlist covers the client-routed paths.
+	ErrorDocument 404 /index.html
+	RewriteRule ^.+$ - [R=404,L]
 </IfModule>
 
 <IfModule mod_headers.c>
