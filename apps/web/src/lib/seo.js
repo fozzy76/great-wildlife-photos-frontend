@@ -37,6 +37,73 @@ export const truncateText = (value = '', maxLength = 155) => {
   return `${text.slice(0, maxLength - 1).trim()}...`;
 };
 
+// Returns and shipping are declared ONCE here, at Organization level, because that is what
+// Google asks for: "A standard return policy for your business that applies to most or all
+// products you sell can be specified using the MerchantReturnPolicy structured data type
+// nested under the Organization structured data type", and for shipping, "Include the
+// ShippingService structured data type under the Organization structured data type."
+//
+// 🔴 EVERY VALUE BELOW COMES FROM src/data/policies.js — the same source the Shipping and
+// Returns pages and the prerender read. Nothing here is estimated. If a policy changes,
+// change it there and mirror it here.
+//
+// ⚠ NO shippingRate is claimed, deliberately. Shipping is charged per size and the live
+// catalog carries SEVEN distinct rates ($5.90 to $29.90 across 41 variants), so any single
+// figure here would be false. Google does not require it ("If applicable"), and its own
+// guidance is to configure delivery settings in Merchant Center where markup cannot stay
+// accurate. Destination and delivery time ARE stated, because those are published facts.
+//
+// ⚠ The 4-day and 8-day figures cover printing AND transit together — that is how the
+// Shipping page states them. No separate handlingTime is claimed, because the source does
+// not separate the two.
+const returnPolicySchema = () => ({
+  '@type': 'MerchantReturnPolicy',
+  '@id': `${SITE_URL}/returns/#returnpolicy`,
+  applicableCountry: ['US', 'CA'],
+  // Made to order, so change-of-mind returns are not accepted. This is the honest category:
+  // a finite window would imply general returns the policy does not offer.
+  returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+  merchantReturnLink: `${SITE_URL}/returns/`,
+  // Damaged, defective or incorrect orders are replaced free and nothing goes back in the post.
+  itemDefectReturnFees: 'https://schema.org/FreeReturn',
+  // Replacement normally; a full refund where replacement is not possible.
+  refundType: ['https://schema.org/ExchangeRefund', 'https://schema.org/FullRefund']
+});
+
+const BUSINESS_DAYS = [
+  'https://schema.org/Monday',
+  'https://schema.org/Tuesday',
+  'https://schema.org/Wednesday',
+  'https://schema.org/Thursday',
+  'https://schema.org/Friday'
+];
+
+const shippingServiceSchema = () => ({
+  '@type': 'ShippingService',
+  name: 'Made-to-order print delivery',
+  description: 'Prints are produced after the order is placed and shipped by UPS, FedEx or DHL.',
+  shippingConditions: [
+    {
+      '@type': 'ShippingConditions',
+      shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'US' },
+      transitTime: {
+        '@type': 'ServicePeriod',
+        duration: { '@type': 'QuantitativeValue', maxValue: 4, unitCode: 'DAY' },
+        businessDays: BUSINESS_DAYS
+      }
+    },
+    {
+      '@type': 'ShippingConditions',
+      shippingDestination: { '@type': 'DefinedRegion', addressCountry: 'CA' },
+      transitTime: {
+        '@type': 'ServicePeriod',
+        duration: { '@type': 'QuantitativeValue', maxValue: 8, unitCode: 'DAY' },
+        businessDays: BUSINESS_DAYS
+      }
+    }
+  ]
+});
+
 export const organizationSchema = () => ({
   '@type': 'Organization',
   '@id': ORGANIZATION_ID,
@@ -47,7 +114,9 @@ export const organizationSchema = () => ({
   founder: {
     '@type': 'Person',
     name: 'Lynn Starnes'
-  }
+  },
+  hasMerchantReturnPolicy: returnPolicySchema(),
+  hasShippingService: shippingServiceSchema()
 });
 
 export const websiteSchema = () => ({

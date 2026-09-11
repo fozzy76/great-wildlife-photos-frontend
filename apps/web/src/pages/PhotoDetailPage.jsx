@@ -28,6 +28,10 @@ const PhotoDetailPage = () => {
   const [addingToCart, setAddingToCart] = useState(false);
   const [justAdded, setJustAdded] = useState(false);
   const [allSlugs, setAllSlugs] = useState([]);
+  // 'not-found' when the API says there is no such photo, 'failed' when the lookup itself
+  // failed. Either way this page stays on its own URL — see the comments at the two
+  // setLoadError calls below.
+  const [loadError, setLoadError] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(-1);
   const materialParam = (searchParams.get('material') || '').toLowerCase();
   const variantParam = parseInt(searchParams.get('variant') || '', 10);
@@ -48,8 +52,12 @@ const PhotoDetailPage = () => {
         }
 
         if (!photoData.success || !photoData.product) {
+          // 🔴 NEVER navigate away from a product URL. Until 2026-09-11 this redirected to
+          // /gallery, and Googlebot recorded precisely that: 30 product pages came back as
+          // "Page with redirect" with /gallery/ chosen as their canonical, so 30 products
+          // could not appear in search at all. Keep the URL and render the state in place.
           toast.error('Photo not found');
-          navigate('/gallery');
+          setLoadError('not-found');
           return;
         }
 
@@ -134,7 +142,8 @@ const PhotoDetailPage = () => {
       } catch (error) {
         console.error('Failed to fetch data:', error);
         toast.error('Failed to load photo');
-        navigate('/gallery');
+        // Same rule as above: a transient API failure must not move a crawler off this URL.
+        setLoadError('failed');
       } finally {
         setLoading(false);
       }
@@ -220,7 +229,46 @@ const PhotoDetailPage = () => {
     );
   }
 
-  if (!photo || !variants) return null;
+  // The photo could not be loaded — either the API has no such slug, or the lookup failed.
+  //
+  // 🔴 This branch replaces a redirect to /gallery and a bare `return null`, and BOTH were
+  // harmful to a crawler: the redirect cost 30 products their place in Google (each came back
+  // "Page with redirect", canonical /gallery/), and an empty render offers nothing to a visitor
+  // who followed a real link.
+  //
+  // Deliberately NO <SEO> here. The prerendered <head> already carries this URL's own title,
+  // description and self-canonical; rendering a different SEO block would overwrite correct
+  // tags with an error state on what is usually a transient failure.
+  if (loadError || !photo || !variants) {
+    return (
+      <div className="min-h-screen bg-background py-12">
+        <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+          <Button variant="ghost" onClick={() => navigate('/gallery')} className="my-4 mb-8">
+            <ArrowLeft className="mr-2 w-4 h-4" />
+            Back to gallery
+          </Button>
+          <div className="rounded-lg p-8 text-center" style={{ border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)' }}>
+            <p className="text-lg font-semibold mb-2">
+              {loadError === 'not-found' ? 'This photograph is not available' : 'This photograph could not be loaded'}
+            </p>
+            <p className="text-sm text-muted-foreground">
+              {loadError === 'not-found'
+                ? 'It may have been renamed or withdrawn. The full collection is in the gallery.'
+                : 'Please reload the page. If it keeps happening, contact us and we will sort it out.'}
+            </p>
+            <div className="mt-6 flex items-center justify-center gap-3">
+              <Button asChild variant="outline">
+                <Link to="/gallery">Browse the gallery</Link>
+              </Button>
+              <Button asChild variant="ghost">
+                <Link to="/contact">Contact us</Link>
+              </Button>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   const materials = Object.keys(variants);
   const selectedVariant = getSelectedVariant();
