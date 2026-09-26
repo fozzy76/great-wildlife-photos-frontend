@@ -226,7 +226,47 @@ export const imageObjectSchema = ({ photo, canonicalPath }) => {
   };
 };
 
-export const productSchema = ({ photo, offerPrices = [], canonicalPath }) => {
+/*
+ * MERCHANT LISTINGS REQUIRE AN `Offer`, NOT AN `AggregateOffer`.
+ * Google, developers.google.com/search/docs/appearance/structured-data/merchant-listing:
+ * "Product snippets accept an `Offer` or `AggregateOffer` but merchant listings require
+ * an `Offer`" — the seller has to be identifiable. Every photo page emitted only an
+ * AggregateOffer until 2026-09-25, so 161 product pages could never be merchant
+ * listings, on a store whose whole purpose is selling those prints.
+ *
+ * `offerList` carries one entry per purchasable material/size, so each becomes its own
+ * Offer at a price that URL genuinely sells at. Passing nothing keeps the old
+ * AggregateOffer, so a caller that has no variant detail does not regress.
+ *
+ * The return policy is `MerchantReturnNotPermitted` because that is the store's actual,
+ * published policy — prints are made to order (see data/policies.js, "we are not able to
+ * accept returns for change of mind"). Damaged or incorrect orders are replaced, which is
+ * not a return in schema.org terms. Never soften this to look better in a rich result.
+ * shippingDetails is deliberately OMITTED: there are 7 live rates from $5.90 to $29.90 and
+ * no single figure is true, and a recommended property left out costs nothing while a wrong
+ * one is a misrepresentation.
+ */
+const offerFor = ({ price, material, variantId, sku, canonicalPath }) => {
+  const params = material && variantId ? `?material=${encodeURIComponent(material)}&variant=${encodeURIComponent(variantId)}` : '';
+  const offer = {
+    '@type': 'Offer',
+    priceCurrency: 'USD',
+    price: Number(price).toFixed(2),
+    availability: 'https://schema.org/InStock',
+    itemCondition: 'https://schema.org/NewCondition',
+    url: absoluteUrl(canonicalPath) + params,
+    seller: { '@id': ORGANIZATION_ID },
+    hasMerchantReturnPolicy: {
+      '@type': 'MerchantReturnPolicy',
+      applicableCountry: ['US', 'CA'],
+      returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+    },
+  };
+  if (sku) offer.sku = sku;
+  return offer;
+};
+
+export const productSchema = ({ photo, offerPrices = [], offerList = [], canonicalPath }) => {
   const imageUrl = photo?.r2_url || photo?.photo_url || DEFAULT_SEO_IMAGE;
   const prices = offerPrices
     .map(price => Number(price))
@@ -250,7 +290,20 @@ export const productSchema = ({ photo, offerPrices = [], canonicalPath }) => {
     category: photo?.category,
     material: ['Canvas', 'Metal', 'Acrylic'],
     url: absoluteUrl(canonicalPath),
-    offers: {
+  };
+
+  // sku mirrors the Merchant Center feed's item_group_id (gwp-photo-<id>) so the page
+  // markup and the feed identify the same thing rather than two unrelated ids.
+  if (photo?.id) schema.sku = `gwp-photo-${photo.id}`;
+
+  const validOffers = (offerList || [])
+    .filter((o) => o && Number.isFinite(Number(o.price)) && Number(o.price) > 0)
+    .map((o) => offerFor({ ...o, canonicalPath }));
+
+  if (validOffers.length) {
+    schema.offers = validOffers;
+  } else {
+    schema.offers = {
       '@type': 'AggregateOffer',
       priceCurrency: 'USD',
       availability: 'https://schema.org/InStock',
@@ -258,12 +311,11 @@ export const productSchema = ({ photo, offerPrices = [], canonicalPath }) => {
       seller: {
         '@id': ORGANIZATION_ID
       }
-    }
-  };
-
-  if (lowPrice) schema.offers.lowPrice = lowPrice;
-  if (highPrice) schema.offers.highPrice = highPrice;
-  if (prices.length) schema.offers.offerCount = String(prices.length);
+    };
+    if (lowPrice) schema.offers.lowPrice = lowPrice;
+    if (highPrice) schema.offers.highPrice = highPrice;
+    if (prices.length) schema.offers.offerCount = String(prices.length);
+  }
 
   return schema;
 };

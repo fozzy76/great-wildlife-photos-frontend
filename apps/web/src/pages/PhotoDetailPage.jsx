@@ -279,6 +279,19 @@ const PhotoDetailPage = () => {
   const offerPrices = Object.values(variants || {})
     .flatMap(material => material?.sizes || [])
     .map(size => getFinalPrice(size));
+  // One entry per purchasable material/size so productSchema can emit a real Offer for
+  // each (merchant listings require Offer, not AggregateOffer). sku matches the Merchant
+  // Center feed's item id scheme so the page and the feed name the same thing.
+  const offerList = Object.entries(variants || {}).flatMap(([material, m]) =>
+    (m?.sizes || [])
+      .map(size => ({
+        material,
+        variantId: size?.id,
+        price: getFinalPrice(size),
+        sku: size?.id ? `gwp-${photo?.id}-${material}-${size.id}` : undefined,
+      }))
+      .filter(o => o.variantId && Number.isFinite(o.price) && o.price > 0)
+  );
 
   // No compatible print sizes for this photo's resolution/aspect ratio
   if (materials.length === 0) {
@@ -299,7 +312,7 @@ const PhotoDetailPage = () => {
               type: 'ItemPage',
               image: photoImage
             }),
-            productSchema({ photo, offerPrices, canonicalPath }),
+            productSchema({ photo, offerPrices, offerList, canonicalPath }),
             breadcrumbSchema([
               { name: 'Home', path: '/' },
               { name: 'Gallery', path: '/gallery' },
@@ -368,7 +381,7 @@ const PhotoDetailPage = () => {
             type: 'ItemPage',
             image: photoImage
           }),
-          productSchema({ photo, offerPrices, canonicalPath }),
+          productSchema({ photo, offerPrices, offerList, canonicalPath }),
           breadcrumbSchema([
             { name: 'Home', path: '/' },
             { name: 'Gallery', path: '/gallery' },

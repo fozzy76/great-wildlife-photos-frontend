@@ -695,6 +695,10 @@ async function main() {
     // page body can state what a buyer actually chooses between instead of only a range.
     let offerPrices = [];
     let priceTable = [];
+    // offerList carries the material + variant id with each price so productSchema can
+    // emit a real Offer per purchasable configuration (merchant listings require Offer,
+    // not AggregateOffer). offerPrices stays for the page body's price range.
+    let offerList = [];
     try {
       const v = await fetchJson(`${API_BASE}/catalog/variants/compatible/${photo.id}`);
       if (v && v.variants) {
@@ -704,6 +708,16 @@ async function main() {
           .flatMap((m) => m?.sizes || [])
           .map(priceOf)
           .filter((n) => Number.isFinite(n) && n > 0);
+        offerList = Object.entries(v.variants).flatMap(([material, m]) =>
+          (m?.sizes || [])
+            .map((s) => ({
+              material,
+              variantId: s?.id,
+              price: priceOf(s),
+              sku: s?.id ? `gwp-${photo.id}-${material}-${s.id}` : undefined,
+            }))
+            .filter((o) => o.variantId && Number.isFinite(o.price) && o.price > 0)
+        );
         priceTable = Object.entries(v.variants)
           .map(([material, m]) => ({
             material,
@@ -717,7 +731,7 @@ async function main() {
     const graph = [
       ...baseGraph(),
       webPageSchema({ path: cp, name: meta.title, description: meta.description, type: 'ItemPage', image: meta.image }),
-      productSchema({ photo, offerPrices, canonicalPath: cp }),
+      productSchema({ photo, offerPrices, offerList, canonicalPath: cp }),
       // Licensable-image metadata — see seo.js. Returns null if the photo has no
       // image URL; baseGraph consumers filter falsy nodes.
       imageObjectSchema({ photo, canonicalPath: cp }),
