@@ -87,7 +87,7 @@ const Footer = () => {
       </div>
       <div style={{ maxHeight: '30px', display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center', color: 'rgba(255,255,255,0.7)', padding: '0 8px', whiteSpace: 'nowrap', backgroundColor: 'transparent', fontWeight: '300', fontSize: '.8em' }}>
         <small> 
-          <a style = {{ color: 'rgba(255, 255, 255, 0.18)', textDecoration: 'none',}} href="https://76designsolutions.com/steady-climb-seo-service/" target="_blank" rel="noopener noreferrer">Brand managed by 76 Design Solutions</a>
+          <a style = {{ color: 'rgba(255, 255, 255, 0.18)', textDecoration: 'none',}} href="https://76designsolutions.com/steady-climb-seo" target="_blank" rel="noopener noreferrer">Brand managed by 76 Design Solutions</a>
         </small>
       </div>
     </footer>
