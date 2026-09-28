@@ -33,8 +33,65 @@ const PhotoDetailPage = () => {
   // setLoadError calls below.
   const [loadError, setLoadError] = useState(null);
   const [currentIndex, setCurrentIndex] = useState(-1);
+// The prerender embeds this page's product record and variant prices as JSON. React
+// clears #root on mount, so WITHOUT this the prerendered content disappears the moment
+// the app boots and the page has nothing until the API answers.
+//
+// 🔴 That is not theoretical. The 2026-09-23 fix stopped this page navigating to /gallery/
+// when the API call failed and rendered an error state in place instead. On 2026-09-27
+// Google crawled two pages during such a failure and recorded BOTH as Soft 404 — they had
+// been indexed. Measured 2026-09-28 by blocking api.greatwildlifephotos.com and rendering
+// as Googlebot: 826 characters, "This photograph could not be loaded", no h1, no price.
+// Redirecting lost the URL; erroring in place lost the content. Both came from the same
+// root cause — the content only existed after a successful runtime fetch.
+//
+// So: seed state from the embedded record, then refresh from the API. A transient failure
+// now leaves the page showing the product instead of an error.
+const embeddedPhotoData = (slug) => {
+  try {
+    const el = document.getElementById('gwp-photo-data');
+    if (!el) return null;
+    const data = JSON.parse(el.textContent || 'null');
+    if (!data || !data.photo || data.photo.slug !== slug) return null;
+    return data;
+  } catch {
+    return null;
+  }
+};
+
   const materialParam = (searchParams.get('material') || '').toLowerCase();
   const variantParam = parseInt(searchParams.get('variant') || '', 10);
+
+  // Seed from the prerendered record before the network is involved at all.
+  useEffect(() => {
+    const seed = embeddedPhotoData(slug);
+    if (!seed) return;
+    setPhoto((cur) => cur || seed.photo);
+    if (Number.isFinite(Number(seed.markupPct))) setMarkupPct((cur) => (cur === 50 ? Number(seed.markupPct) : cur));
+    if (seed.variants && Object.keys(seed.variants).length) {
+      setVariants((cur) => cur || seed.variants);
+      // A default material and size must be chosen here too, not only on the API path.
+      // Without it the seeded page rendered the photograph with NO PRICE — better than a
+      // Soft 404 and still a product page a buyer cannot act on. Honour the ?material= and
+      // ?variant= parameters so a variant URL seeds the variant it names.
+      const materials = Object.keys(seed.variants);
+      let nextMaterial = seed.variants.canvas ? 'canvas' : materials[0];
+      let nextVariantId = seed.variants[nextMaterial]?.sizes?.[0]?.id ?? null;
+      if (materialParam && seed.variants[materialParam]) {
+        nextMaterial = materialParam;
+        nextVariantId = seed.variants[nextMaterial]?.sizes?.[0]?.id ?? null;
+      }
+      if (Number.isFinite(variantParam)) {
+        for (const material of materials) {
+          const requested = (seed.variants[material]?.sizes || []).find((size) => size.id === variantParam);
+          if (requested) { nextMaterial = material; nextVariantId = requested.id; break; }
+        }
+      }
+      setSelectedMaterial((cur) => cur || nextMaterial);
+      setSelectedVariantId((cur) => cur ?? nextVariantId);
+    }
+    setLoading(false);
+  }, [slug, materialParam, variantParam]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -141,9 +198,16 @@ const PhotoDetailPage = () => {
         }
       } catch (error) {
         console.error('Failed to fetch data:', error);
-        toast.error('Failed to load photo');
-        // Same rule as above: a transient API failure must not move a crawler off this URL.
-        setLoadError('failed');
+        // 🔴 If the prerendered record is on the page, KEEP SHOWING IT. Rendering an error
+        // over real content is what produced two Soft 404s on 2026-09-27. Only a page with
+        // nothing to show may show the failure state.
+        if (embeddedPhotoData(slug)) {
+          console.warn('API unreachable — serving the prerendered record for', slug);
+        } else {
+          toast.error('Failed to load photo');
+          // Same rule as above: a transient API failure must not move a crawler off this URL.
+          setLoadError('failed');
+        }
       } finally {
         setLoading(false);
       }

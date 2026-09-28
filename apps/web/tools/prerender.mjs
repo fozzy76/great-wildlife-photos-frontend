@@ -210,6 +210,17 @@ const MATERIAL_COPY = {
 };
 const MATERIAL_LABEL = { canvas: 'Canvas', metal: 'Metal (aluminium)', acrylic: 'Acrylic' };
 
+// dataBlob is this photo's record + variants, embedded as JSON so the React app can seed
+// itself without waiting on the API. React clears #root on mount, so without it the
+// prerendered content vanishes the moment the bundle runs, and a failed API call leaves
+// the page with nothing — which Google recorded as Soft 404 on two pages, 2026-09-27.
+// JSON in a script tag of a non-JS type is inert data, never executed. A literal
+// `</script>` inside a string would close the tag early, so that sequence is escaped.
+function photoDataScript(dataBlob) {
+  if (!dataBlob) return '';
+  return `<script id="gwp-photo-data" type="application/json">${JSON.stringify(dataBlob).replace(/<\//g, '<\\/')}</script>`;
+}
+
 function photoBody(photo, offerPrices, canonicalPath, priceTable = [], allProducts = []) {
   const img = photo.r2_url || photo.photo_url || '';
   const prices = offerPrices.filter((n) => Number.isFinite(n) && n > 0);
@@ -478,8 +489,13 @@ const STATIC_BODY = {
   '/license': () => policyBody(licensePolicy),
 };
 
-function renderRoute(template, meta, schemaGraph, body) {
-  let out = template.replace('<!--PRERENDER-INJECT-->', '    ' + headBlock(meta, schemaGraph));
+// 🔴 headExtra goes in the HEAD, deliberately, NOT in the body. React's createRoot CLEARS
+// #root on mount, so anything the app must read after hydration cannot live inside it.
+// Measured 2026-09-28: the embedded product record was first emitted inside #root, React
+// deleted it before the seeding effect ran, and the page still rendered the error state
+// with the API blocked — the fix silently did nothing until it moved up here.
+function renderRoute(template, meta, schemaGraph, body, headExtra = '') {
+  let out = template.replace('<!--PRERENDER-INJECT-->', '    ' + headBlock(meta, schemaGraph) + (headExtra ? '\n    ' + headExtra : ''));
   if (body) {
     out = out.replace('<div id="root"></div>', `<div id="root">${body}</div>`);
   }
@@ -699,6 +715,7 @@ async function main() {
     // emit a real Offer per purchasable configuration (merchant listings require Offer,
     // not AggregateOffer). offerPrices stays for the page body's price range.
     let offerList = [];
+    let rawVariants = null;
     try {
       const v = await fetchJson(`${API_BASE}/catalog/variants/compatible/${photo.id}`);
       if (v && v.variants) {
@@ -718,6 +735,7 @@ async function main() {
             }))
             .filter((o) => o.variantId && Number.isFinite(o.price) && o.price > 0)
         );
+        rawVariants = v.variants;
         priceTable = Object.entries(v.variants)
           .map(([material, m]) => ({
             material,
@@ -737,7 +755,8 @@ async function main() {
       imageObjectSchema({ photo, canonicalPath: cp }),
       breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Gallery', path: '/gallery' }, { name: photo.title, path: cp }]),
     ];
-    writeRoute(cp, renderRoute(template, meta, graph, photoBody(photo, offerPrices, cp, priceTable, products)));
+    writeRoute(cp, renderRoute(template, meta, graph, photoBody(photo, offerPrices, cp, priceTable, products),
+      photoDataScript({ photo, variants: rawVariants, markupPct })));
     count++;
   });
 
