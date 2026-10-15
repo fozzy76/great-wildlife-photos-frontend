@@ -16,6 +16,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath, pathToFileURL } from 'node:url';
+import { createElement } from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
 
 const toolsDir = path.dirname(fileURLToPath(import.meta.url));
 const webRoot = path.join(toolsDir, '..');
@@ -340,17 +344,19 @@ function collectionBody(collection, items) {
   `);
 }
 
+// The article is stored as Markdown; render it with the same library and plugin the page uses
+// (BlogPostPage.jsx: ReactMarkdown + remark-gfm), so a crawler reading raw HTML gets the whole
+// article with its headings and lists, not flattened Markdown cut at 2,000 characters (TSK-2026-1509).
 function articleBody(post, path) {
   const body = (post.content || post.excerpt || '').toString();
-  const text = body.replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' ').trim();
+  const html = renderToStaticMarkup(createElement(ReactMarkdown, { remarkPlugins: [remarkGfm] }, body));
   return bodyBlock(`
     <article>
       <nav aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/blog/">Blog</a></nav>
       <h1>${esc(post.title)}</h1>
       ${post.date ? `<p><time>${esc(post.date)}</time></p>` : ''}
       ${post.image ? `<img src="${esc(post.image)}" alt="${esc(post.title)}" />` : ''}
-      <p>${esc(text.slice(0, 2000))}</p>
-      <p><a href="${esc(path)}/">Read the full article</a></p>
+      ${html}
     </article>
   `);
 }
