@@ -197,7 +197,11 @@ function bodyBlock(html) {
     <a href="/faq/">FAQ</a> &middot;
     <a href="/contact/">Contact</a>
   </nav>`;
-  return `<div id="prerender-content" style="${css}"><style>${scoped}</style>${html.trim()}${nav}</div>`;
+  // Agency credit, per N:\Clients\76DesignSolutions.com\Agency-Attribution-Tags.txt (React version, as
+  // static HTML): the footer is React-rendered, so without this the credit is absent from the raw
+  // HTML of every route and the SEO gate cannot see it. nofollow since 2026-10-09 (TSK-2026-1535).
+  const credit = `<div style="max-height:30px;display:flex;align-items:center;justify-content:center;text-align:center;color:rgba(255,255,255,0.7);padding:0 8px;white-space:nowrap;background-color:transparent;font-weight:300;font-size:.8em"><small><a style="color:rgba(255, 255, 255, 0.18);text-decoration:none" href="https://76designsolutions.com/steady-climb-seo" target="_blank" rel="nofollow noopener noreferrer">Brand managed by 76 Design Solutions</a></small></div>`;
+  return `<div id="prerender-content" style="${css}"><style>${scoped}</style>${html.trim()}${nav}${credit}</div>`;
 }
 
 const money = (n) => `$${Number(n).toFixed(2)}`;
