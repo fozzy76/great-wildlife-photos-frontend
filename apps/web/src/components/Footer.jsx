@@ -63,7 +63,7 @@ const Footer = () => {
             <p style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px' }}>
               © 2026 Lynn Starnes / Great Wildlife Photos. All photographs are trademarked and may not be reproduced without written permission.
             </p>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+            <div style={{ display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '20px' }}>
               <Link to="/privacy" style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px', textDecoration: 'none' }}>Privacy Policy</Link>
               <Link to="/terms" style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px', textDecoration: 'none' }}>Terms of Service</Link>
               {/* Shipping and Returns sit in the footer so they are reachable from every
