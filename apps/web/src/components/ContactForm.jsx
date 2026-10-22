@@ -5,6 +5,7 @@ import { Textarea } from '@/components/ui/textarea.jsx';
 import { Label } from '@/components/ui/label.jsx';
 import TurnstileWidget from '@/components/TurnstileWidget.jsx';
 import { toast } from 'sonner';
+import { trackFormSubmit } from '@/lib/analytics.js';
 
 const ContactForm = () => {
   const [formData, setFormData] = useState({
@@ -46,6 +47,7 @@ const ContactForm = () => {
         throw new Error(data.error || 'Failed to send message');
       }
 
+      trackFormSubmit();
       toast.success("Message sent! Lynn will get back to you within 1–2 business days.");
       setFormData({ name: '', email: '', message: '' });
       turnstileRef.current?.reset();

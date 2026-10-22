@@ -123,3 +123,10 @@ export function trackNewsletterSignup() {
     method: 'footer'
   });
 }
+
+// form_submit is a GA4 key event on this property; it is sent only when the contact API confirms the message.
+export function trackFormSubmit() {
+  event('form_submit', {
+    form_id: 'contact'
+  });
+}
