@@ -515,17 +515,10 @@ const embeddedPhotoData = (slug) => {
                 {selectedVariant && (
                   <div className="space-y-1">
                     <p className="text-3xl font-bold text-primary">${finalPrice.toFixed(2)}</p>
-                    <p className="text-sm text-muted-foreground">+ ${selectedVariant.shipping.toFixed(2)} shipping</p>
+                    <p className="text-sm text-muted-foreground">+ ${selectedVariant.shipping.toFixed(2)} shipping · ${((finalPrice * quantity) + selectedVariant.shipping).toFixed(2)} delivered</p>
                   </div>
                 )}
               </div>
-
-              {photo.description && (
-                <div>
-                  <h2 className="text-lg font-semibold mb-2">Description</h2>
-                  <p className="text-muted-foreground leading-relaxed">{photo.description}</p>
-                </div>
-              )}
 
               <div className="space-y-4 pt-6 border-t border-border">
                 <div>
@@ -540,7 +533,6 @@ const embeddedPhotoData = (slug) => {
                       ))}
                     </SelectContent>
                   </Select>
-                  <MaterialMockup material={selectedMaterial} imageUrl={photo?.r2_url || photo?.photo_url} variant={selectedVariant} />
                 </div>
 
                 <div>
@@ -570,6 +562,16 @@ const embeddedPhotoData = (slug) => {
                   </div>
                 </div>
 
+                <Button
+                  onClick={handleAddToCart}
+                  disabled={addingToCart || !selectedVariant}
+                  size="lg"
+                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
+                >
+                  <ShoppingCart className="mr-2 w-5 h-5" />
+                  {addingToCart ? 'Adding...' : 'Add to cart'}
+                </Button>
+
                 {selectedVariant && (
                   <div 
                     className="rounded-lg p-4 text-sm space-y-1" 
@@ -590,16 +592,6 @@ const embeddedPhotoData = (slug) => {
                   </div>
                 )}
 
-                <Button
-                  onClick={handleAddToCart}
-                  disabled={addingToCart || !selectedVariant}
-                  size="lg"
-                  className="w-full bg-primary text-primary-foreground hover:bg-primary/90"
-                >
-                  <ShoppingCart className="mr-2 w-5 h-5" />
-                  {addingToCart ? 'Adding...' : 'Add to cart'}
-                </Button>
-
                 {justAdded && (
                   <Button
                     onClick={() => navigate('/checkout')}
@@ -610,7 +602,16 @@ const embeddedPhotoData = (slug) => {
                     Checkout · ${((finalPrice * quantity) + selectedVariant.shipping).toFixed(2)}
                   </Button>
                 )}
+
+                <MaterialMockup material={selectedMaterial} imageUrl={photo?.r2_url || photo?.photo_url} variant={selectedVariant} />
               </div>
+
+              {photo.description && (
+                <div className="pt-6 border-t border-border">
+                  <h2 className="text-lg font-semibold mb-2">Description</h2>
+                  <p className="text-muted-foreground leading-relaxed">{photo.description}</p>
+                </div>
+              )}
 
               <div className="pt-6 border-t border-border space-y-2 text-sm text-muted-foreground">
                 <p>• Premium quality printing on selected material</p>
