@@ -6,6 +6,11 @@
 	RewriteRule ^blog/bighorn-/?$ https://greatwildlifephotos.com/gallery [R=301,L]
 	RewriteRule ^about-the-artist/?$ https://greatwildlifephotos.com/about [R=301,L]
 	RewriteRule ^warehouse-open-edition-prints/art_print_products/ram-symmetry-lbs-2171/?$ https://greatwildlifephotos.com/gallery [R=301,L]
+	# Dead old-site addresses that still carry inbound links (TSK-2026-0959): each to its nearest collection.
+	RewriteRule ^warehouse-open-edition-prints/art_print_products/lion-stalking-lbs-0832-48mqca0jffe/?$ https://greatwildlifephotos.com/gallery/united-states-large-cats/ [R=301,L]
+	RewriteRule ^shop-art/?$ https://greatwildlifephotos.com/gallery/ [R=301,L]
+	RewriteRule ^wp-content/uploads/2019/07/Kit-Fox-With-Dinner_LBS_179\.jpg$ https://greatwildlifephotos.com/gallery/wolves-coyotes-and-foxes/ [R=301,L]
+	RewriteRule ^wp-content/uploads/2020/05/Antelope-Closeup-W_LBS_0600\.jpg$ https://greatwildlifephotos.com/gallery/mule-deer/ [R=301,L]
 
 	# Keep the canonical host and sitemap endpoint unambiguous for crawlers.
 	RewriteRule ^sitemap\.xml$ https://api.greatwildlifephotos.com/sitemap.xml [R=301,L]
