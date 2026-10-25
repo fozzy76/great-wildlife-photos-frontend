@@ -126,3 +126,25 @@
     }
   }
 }
+
+/* TSK-2026-1721: photo page on phones only. Price, delivered total and Add to cart in the first screen at 390 x 844.
+   Everything here is inside max-width 767px, so tablets and desktops are unchanged. The photo is shown whole
+   (contain, never cropped), the photographer credit moves below the purchase block, and the pickers keep their
+   logic; only spacing and placement change. */
+@media (max-width: 767px) {
+  .gwp-pd-page { padding-top: 0.5rem; }
+  .gwp-pd-topbar { margin-top: 0; margin-bottom: 0.5rem; }
+  .gwp-pd-grid { gap: 0.75rem; }
+  .gwp-pd-photo-col { display: contents; }
+  .gwp-pd-photo { order: 1; height: 240px !important; }
+  .gwp-pd-photo img { object-fit: contain; }
+  .gwp-pd-info { order: 2; }
+  .gwp-pd-credit { order: 3; margin-top: 0 !important; }
+  .gwp-pd-info > * + * { margin-top: 0.75rem !important; }
+  .gwp-pd-title { font-size: 1.5rem; line-height: 2rem; margin-bottom: 0.25rem; }
+  .gwp-pd-buy { display: grid; grid-template-columns: 1fr 1fr; column-gap: 0.75rem; row-gap: 0.625rem; padding-top: 0.75rem; }
+  .gwp-pd-buy > * { grid-column: 1 / -1; margin-top: 0 !important; }
+  .gwp-pd-buy > .gwp-pd-pick { grid-column: auto; }
+  .gwp-pd-qty { display: flex; align-items: center; justify-content: space-between; }
+  .gwp-pd-qty > label { margin-bottom: 0; }
+}

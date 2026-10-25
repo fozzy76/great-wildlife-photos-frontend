@@ -457,9 +457,9 @@ const embeddedPhotoData = (slug) => {
         {photo.height && <meta property="og:image:height" content={String(photo.height)} />}
       </SEO>
 
-      <div className="min-h-screen bg-background py-12">
+      <div className="min-h-screen bg-background py-12 gwp-pd-page">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center justify-between my-4 mb-8">
+          <div className="flex items-center justify-between my-4 mb-8 gwp-pd-topbar">
             <Button variant="ghost" onClick={() => navigate('/gallery')}>
               <ArrowLeft className="mr-2 w-4 h-4" />
               Back to gallery
@@ -486,10 +486,10 @@ const embeddedPhotoData = (slug) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12">
-            <div className="lg:col-span-3">
-              <div 
-                className="relative overflow-hidden shadow-xl" 
+          <div className="grid grid-cols-1 lg:grid-cols-5 gap-12 gwp-pd-grid">
+            <div className="lg:col-span-3 gwp-pd-photo-col">
+              <div
+                className="relative overflow-hidden shadow-xl gwp-pd-photo"
                 style={{ height: '520px', objectFit: 'cover', borderRadius: '16px' }}
               >
                 <img
@@ -500,18 +500,18 @@ const embeddedPhotoData = (slug) => {
                   onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1564760055775-d63b17a55c44'; }}
                 />
               </div>
-              <div style={{ marginTop: '16px', padding: '16px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
+              <div className="gwp-pd-credit" style={{ marginTop: '16px', padding: '16px', background: 'rgba(255,255,255,0.05)', borderRadius: '12px' }}>
                 <h3 className="font-semibold text-white mb-1">Photographed by Lynn Starnes</h3>
                 <p className="text-sm text-gray-300">Award-winning wildlife photographer · 30+ years in the field · Named Top 25, Nature's Best Photography, Smithsonian Institution 2018</p>
               </div>
             </div>
 
-            <div className="lg:col-span-2 space-y-6">
+            <div className="lg:col-span-2 space-y-6 gwp-pd-info">
               <div>
                 <Link to={categoryPath} className="inline-flex text-sm font-medium text-primary mb-2 hover:text-primary/80 transition-colors">
                   {photo.category}
                 </Link>
-                <h1 className="text-4xl font-bold mb-4">{photo.title}</h1>
+                <h1 className="text-4xl font-bold mb-4 gwp-pd-title">{photo.title}</h1>
                 {selectedVariant && (
                   <div className="space-y-1">
                     <p className="text-3xl font-bold text-primary">${finalPrice.toFixed(2)}</p>
@@ -520,8 +520,8 @@ const embeddedPhotoData = (slug) => {
                 )}
               </div>
 
-              <div className="space-y-4 pt-6 border-t border-border">
-                <div>
+              <div className="space-y-4 pt-6 border-t border-border gwp-pd-buy">
+                <div className="gwp-pd-pick">
                   <label className="block text-sm font-medium mb-2">Material</label>
                   <Select value={selectedMaterial} onValueChange={handleMaterialChange}>
                     <SelectTrigger className="bg-white text-gray-900"><SelectValue /></SelectTrigger>
@@ -535,7 +535,7 @@ const embeddedPhotoData = (slug) => {
                   </Select>
                 </div>
 
-                <div>
+                <div className="gwp-pd-pick">
                   <label className="block text-sm font-medium mb-2">Size</label>
                   <Select value={String(selectedVariantId)} onValueChange={(val) => setSelectedVariantId(parseInt(val))}>
                     <SelectTrigger className="bg-white text-gray-900"><SelectValue /></SelectTrigger>
@@ -549,7 +549,7 @@ const embeddedPhotoData = (slug) => {
                   </Select>
                 </div>
 
-                <div>
+                <div className="gwp-pd-qty">
                   <label className="block text-sm font-medium mb-2">Quantity</label>
                   <div className="flex items-center gap-4">
                     <Button variant="outline" size="icon" onClick={() => setQuantity(Math.max(1, quantity - 1))}>
