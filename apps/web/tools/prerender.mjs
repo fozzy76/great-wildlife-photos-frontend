@@ -770,7 +770,26 @@ async function main() {
     count++;
   });
 
-  console.log(`prerender: wrote ${count} static HTML files to ${outputDir}`);
+  // TSK-2026-2149: .htaccess now answers 404 for a /photo/<slug>/ with no prerendered directory,
+  // so a REAL product must never be left without one. If its page failed above, write the home
+  // shell there instead (the pre-2149 behavior: 200, the client renders the product).
+  const homeShell = fs.readFileSync(shellPath, 'utf8');
+  let shellFallbacks = 0;
+  for (const photo of products) {
+    if (!photo || !photo.slug) continue;
+    if (!fs.existsSync(path.join(outputDir, 'photo', photo.slug, 'index.html'))) {
+      writeRoute(`/photo/${photo.slug}`, homeShell);
+      shellFallbacks++;
+      console.warn(`prerender: /photo/${photo.slug} had no page; wrote the SPA shell (200)`);
+    }
+  }
+
+  // The 404 document (.htaccess ErrorDocument): the SPA shell, so the not-found view is branded,
+  // with noindex and no canonical.
+  fs.writeFileSync(path.join(outputDir, '404.html'), template.replace('<!--PRERENDER-INJECT-->',
+    `    <title>Page not found - ${esc(SITE_NAME)}</title>\n    <meta name="robots" content="noindex" />`), 'utf8');
+
+  console.log(`prerender: wrote ${count} static HTML files to ${outputDir} (${shellFallbacks} shell fallbacks, 404.html)`);
 }
 
 main().catch((e) => { console.error('prerender fatal:', e); process.exit(1); });

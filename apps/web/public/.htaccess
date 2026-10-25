@@ -22,7 +22,9 @@
 	RewriteRule ^ - [L]
 
 	RewriteRule ^(gallery|cart|checkout|order-success|order-receipt|contact|about|faq|privacy|terms|blog)(/.*)?$ /index.html [L]
-	RewriteRule ^photo/[^/]+/?$ /index.html [L]
+	# No /photo/ rule (TSK-2026-2149): every real product is a prerendered directory, served by the
+	# -f/-d test above, so a /photo/<slug>/ that reaches this point matches no product and gets the
+	# 404 below. The old rule sent it /index.html: 200 with the home page's title and canonical.
 	RewriteRule ^confirmation/[^/]+/?$ /index.html [L]
 
 	# A URL that does not exist must return 404 — not a redirect to the homepage.
@@ -42,7 +44,9 @@
 	# every prerendered page and asset (all 189 of them, including /license,
 	# /returns and /shipping, which are prerendered directories rather than
 	# allowlisted above), and the SPA allowlist covers the client-routed paths.
-	ErrorDocument 404 /index.html
+	# /404.html is that shell with noindex and no canonical (written by tools/prerender.mjs), so a
+	# missing address never claims to be the home page (TSK-2026-2149).
+	ErrorDocument 404 /404.html
 	RewriteRule ^.+$ - [R=404,L]
 </IfModule>
 
