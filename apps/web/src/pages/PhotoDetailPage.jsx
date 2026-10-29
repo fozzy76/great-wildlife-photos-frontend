@@ -394,10 +394,12 @@ const embeddedPhotoData = (slug) => {
               <div className="lg:col-span-3">
                 <div className="relative overflow-hidden shadow-xl" style={{ height: '520px', objectFit: 'cover', borderRadius: '16px' }}>
                   <img
-                    src={`https://api.greatwildlifephotos.com/image-proxy?url=${encodeURIComponent(photo?.r2_url || photo?.photo_url)}`}
+                    src={photo?.r2_url || photo?.photo_url}
                     alt={`${photo?.title} - Fine art wildlife photography print by Lynn Starnes`}
                     className="w-full h-full object-cover"
-                    crossOrigin="anonymous"
+                    fetchpriority="high"
+                    width={photo?.width || undefined}
+                    height={photo?.height || undefined}
                   />
                 </div>
               </div>
@@ -493,10 +495,12 @@ const embeddedPhotoData = (slug) => {
                 style={{ height: '520px', objectFit: 'cover', borderRadius: '16px' }}
               >
                 <img
-                  src={`https://api.greatwildlifephotos.com/image-proxy?url=${encodeURIComponent(photo?.r2_url || photo?.photo_url)}`}
+                  src={photo?.r2_url || photo?.photo_url}
                   alt={`${photo?.title} - Fine art wildlife photography print on canvas, metal, or acrylic by Lynn Starnes`}
                   className="w-full h-full object-cover"
-                  crossOrigin="anonymous"
+                  fetchpriority="high"
+                  width={photo?.width || undefined}
+                  height={photo?.height || undefined}
                   onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1564760055775-d63b17a55c44'; }}
                 />
               </div>

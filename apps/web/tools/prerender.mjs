@@ -276,7 +276,7 @@ function photoBody(photo, offerPrices, canonicalPath, priceTable = [], allProduc
       </nav>
       <h1>${esc(photo.title)}</h1>
       ${photo.category ? `<p><strong>Collection:</strong> ${esc(photo.category)}</p>` : ''}
-      ${img ? `<img src="${esc(img)}" alt="${esc(photo.title)} — wildlife photography print by Lynn Starnes"${photo.width ? ` width="${photo.width}"` : ''}${photo.height ? ` height="${photo.height}"` : ''} />` : ''}
+      ${img ? `<img src="${esc(img)}" alt="${esc(photo.title)} — wildlife photography print by Lynn Starnes" fetchpriority="high"${photo.width ? ` width="${photo.width}"` : ''}${photo.height ? ` height="${photo.height}"` : ''} />` : ''}
       ${photo.description ? `<p>${esc(photo.description)}</p>` : ''}
       ${lo !== null ? `<p><strong>Fine art prints from ${money(lo)}${hi && hi > lo ? ` to ${money(hi)}` : ''}</strong> — available on canvas, acrylic and aluminium.</p>` : ''}
       <p>Photographed by Lynn Starnes. Every print is produced to order on museum-quality materials.</p>
