@@ -8,6 +8,7 @@ import { Skeleton } from '@/components/ui/skeleton.jsx';
 import { cn } from '@/lib/utils.js';
 import SEO from '@/components/SEO.jsx';
 import { COLLECTION_BY_CATEGORY } from '@/data/collections.js';
+import { pageCopy } from '@/data/keywordCopy.js';
 import { DEFAULT_SEO_IMAGE, SITE_URL, baseGraph, breadcrumbSchema, webPageSchema } from '@/lib/seo.js';
 
 const API_BASE = 'https://api.greatwildlifephotos.com';
@@ -210,7 +211,7 @@ const GalleryPage = () => {
   const pageTitle = pageTitleParts.join(' | ');
   const pageDescription = categoryFromUrl !== 'all'
     ? `Browse ${categoryFromUrl} wildlife photography prints by Lynn Starnes. Shop museum-quality canvas, metal, and acrylic fine art prints.`
-    : 'Browse award-winning North American wildlife photography prints by Lynn Starnes. Filter fine art prints by subject and shop canvas, metal, and acrylic options.';
+    : pageCopy('/gallery').description || 'Browse award-winning North American wildlife photography prints by Lynn Starnes. Filter fine art prints by subject and shop canvas, metal, and acrylic options.';
 
   return (
     <>
@@ -242,7 +243,7 @@ const GalleryPage = () => {
       <div className="min-h-screen bg-background pt-24 pb-16">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-10">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance">Photo gallery</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance">{pageCopy('/gallery').h1 || 'Photo gallery'}</h1>
             <p className="text-lg text-muted-foreground max-w-3xl">
               Lynn Starnes has photographed North American wildlife for over three decades. Browse award-winning images available as premium fine art prints on canvas, metal, and acrylic.
             </p>

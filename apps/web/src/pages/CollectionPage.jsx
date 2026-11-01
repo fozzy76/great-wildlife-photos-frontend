@@ -3,6 +3,7 @@ import { Link, useParams, Navigate } from 'react-router-dom';
 import SEO from '@/components/SEO.jsx';
 import { DEFAULT_SEO_IMAGE, baseGraph, breadcrumbSchema, webPageSchema } from '@/lib/seo.js';
 import { COLLECTION_BY_SLUG } from '@/data/collections.js';
+import { pageCopy } from '@/data/keywordCopy.js';
 
 const API_BASE = import.meta.env.VITE_API_BASE_URL || 'https://api.greatwildlifephotos.com';
 
@@ -42,20 +43,25 @@ export default function CollectionPage() {
   if (!collection) return <Navigate to="/gallery" replace />;
 
   const path = `/gallery/${collection.slug}`;
+  // Search copy (TSK-2026-2478): the approved title, description, H1 and opening line where set.
+  // Lynn's intro (collection.intro) is shown unchanged below the opening line.
+  const copy = pageCopy(path);
+  const title = copy.title || collection.title;
+  const description = copy.description || collection.description;
 
   return (
     <div className="w-full">
       <SEO
-        title={collection.title}
-        description={collection.description}
+        title={title}
+        description={description}
         path={path}
         image={DEFAULT_SEO_IMAGE}
         schema={[
           ...baseGraph(),
           webPageSchema({
             path,
-            name: collection.title,
-            description: collection.description,
+            name: title,
+            description,
             type: 'CollectionPage',
             image: DEFAULT_SEO_IMAGE,
           }),
@@ -75,8 +81,12 @@ export default function CollectionPage() {
         </nav>
 
         <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">
-          {collection.name} Photography Prints
+          {copy.h1 || `${collection.name} Photography Prints`}
         </h1>
+
+        {copy.lead && (
+          <p className="mt-5 max-w-3xl text-base leading-relaxed text-muted-foreground">{copy.lead}</p>
+        )}
 
         <p className="mt-5 max-w-3xl text-base leading-relaxed text-muted-foreground">
           {collection.intro}

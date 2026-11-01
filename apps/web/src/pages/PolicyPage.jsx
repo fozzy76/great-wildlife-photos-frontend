@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import SEO from '@/components/SEO.jsx';
 import { DEFAULT_SEO_IMAGE, baseGraph, breadcrumbSchema, webPageSchema } from '@/lib/seo.js';
+import { pageCopy } from '@/data/keywordCopy.js';
 
 // Shared renderer for the Shipping and Returns policy pages.
 //
@@ -13,23 +14,28 @@ import { DEFAULT_SEO_IMAGE, baseGraph, breadcrumbSchema, webPageSchema } from '@
 // lived inside an FAQ accordion, hidden until clicked.
 export default function PolicyPage({ policy }) {
   const path = `/${policy.slug}`;
+  // Search copy (TSK-2026-2478): the approved title, description and H1 where set.
+  const copy = pageCopy(path);
+  const title = copy.title || policy.title;
+  const description = copy.description || policy.description;
+  const heading = copy.h1 || policy.heading;
 
   return (
     <div className="w-full">
       <SEO
-        title={policy.title}
-        description={policy.description}
+        title={title}
+        description={description}
         path={path}
         image={DEFAULT_SEO_IMAGE}
         schema={[
           ...baseGraph(),
-          webPageSchema({ path, name: policy.title, description: policy.description, image: DEFAULT_SEO_IMAGE }),
-          breadcrumbSchema([{ name: 'Home', path: '/' }, { name: policy.heading, path }]),
+          webPageSchema({ path, name: title, description, image: DEFAULT_SEO_IMAGE }),
+          breadcrumbSchema([{ name: 'Home', path: '/' }, { name: heading, path }]),
         ]}
       />
 
       <div className="mx-auto max-w-3xl px-4 py-12">
-        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{policy.heading}</h1>
+        <h1 className="text-3xl font-semibold tracking-tight sm:text-4xl">{heading}</h1>
 
         <p className="mt-5 text-base leading-relaxed text-muted-foreground">{policy.intro}</p>
 

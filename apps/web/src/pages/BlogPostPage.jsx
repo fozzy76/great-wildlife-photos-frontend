@@ -6,6 +6,8 @@ import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
 import SEO from '@/components/SEO.jsx';
 import { articleSchema, baseGraph, breadcrumbSchema, webPageSchema } from '@/lib/seo.js';
+import { blogMeta } from '@/lib/routeMeta.js';
+import { pageCopy } from '@/data/keywordCopy.js';
 
 const BlogPostPage = () => {
   const { slug } = useParams();
@@ -24,12 +26,16 @@ const BlogPostPage = () => {
   }
 
   const canonicalPath = `/blog/${post.slug}`;
+  // Search copy (TSK-2026-2478): title and description from routeMeta (the same values the prerender bakes in);
+  // the approved H1 and image alt where set.
+  const meta = blogMeta(post);
+  const copy = pageCopy(canonicalPath);
 
   return (
     <>
       <SEO
-        title={`${post.title} | Great Wildlife Photos Blog`}
-        description={post.excerpt}
+        title={meta.title}
+        description={meta.description}
         path={canonicalPath}
         image={post.coverImage}
         type="article"
@@ -66,7 +72,7 @@ const BlogPostPage = () => {
               {post.category}
             </span>
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-balance leading-tight">
-              {post.title}
+              {copy.h1 || post.title}
             </h1>
             <div className="flex items-center gap-3 text-muted-foreground">
               <span>{post.date}</span>
@@ -77,7 +83,7 @@ const BlogPostPage = () => {
 
           <img 
             src={post.coverImage} 
-            alt={post.title} 
+            alt={copy.alt || post.title} 
             className="w-full h-72 md:h-96 object-cover rounded-2xl mb-12 shadow-lg"
           />
 

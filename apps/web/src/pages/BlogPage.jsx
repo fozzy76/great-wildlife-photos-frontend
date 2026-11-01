@@ -5,6 +5,7 @@ import { blogPosts } from '@/data/blogPosts.js';
 import SEO from '@/components/SEO.jsx';
 import { DEFAULT_SEO_IMAGE, baseGraph, breadcrumbSchema, webPageSchema } from '@/lib/seo.js';
 import { STATIC_ROUTES } from '@/lib/routeMeta.js';
+import { pageCopy } from '@/data/keywordCopy.js';
 
 const BlogPage = () => {
   return (
@@ -30,7 +31,7 @@ const BlogPage = () => {
       <div className="min-h-screen bg-background pt-24 pb-16">
         <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="mb-12 text-center">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance">From the Field</h1>
+            <h1 className="text-4xl md:text-5xl font-bold mb-4 text-balance">{pageCopy('/blog').h1 || 'From the Field'}</h1>
             <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
               Stories, guides, and moments from Lynn Starnes
             </p>

@@ -13,6 +13,7 @@
 // matching page <SEO> spread — they share this module so one change covers both.
 
 import { DEFAULT_SEO_IMAGE, truncateText } from './seo.js';
+import { pageCopy, photoCopy } from '../data/keywordCopy.js';
 
 const INDEX = 'index,follow';
 const NOINDEX = 'noindex,follow';
@@ -122,10 +123,17 @@ export const STATIC_ROUTES = {
   },
 };
 
+// Search copy (TSK-2026-2478): the approved title and description replace the values above where set.
+for (const [p, m] of Object.entries(STATIC_ROUTES)) {
+  const c = pageCopy(p);
+  if (c.title) m.title = c.title;
+  if (c.description) m.description = c.description;
+}
+
 // Blog post meta — sourced from src/data/blogPosts.js (local, build-time available).
 export const blogMeta = (post) => ({
-  title: `${post.title} | Great Wildlife Photos Blog`,
-  description: post.excerpt,
+  title: pageCopy(`/blog/${post.slug}`).title || `${post.title} | Great Wildlife Photos Blog`,
+  description: pageCopy(`/blog/${post.slug}`).description || post.excerpt,
   path: `/blog/${post.slug}`,
   image: post.coverImage || DEFAULT_SEO_IMAGE,
   type: 'article',
@@ -136,8 +144,9 @@ export const blogMeta = (post) => ({
 // (offerPrices) is handled by the prerender via seo.js productSchema so this
 // stays a pure function of the product record.
 export const photoMeta = (photo) => ({
-  title: `${photo.title} - Great Wildlife Photos`,
+  title: photoCopy(photo.slug).title || `${photo.title} - Great Wildlife Photos`,
   description: truncateText(
+    photoCopy(photo.slug).description ||
     photo.description ||
       `Premium ${photo.category || 'wildlife'} wildlife photography print by Lynn Starnes, available on canvas, metal, and acrylic.`,
     155

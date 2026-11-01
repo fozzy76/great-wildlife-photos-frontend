@@ -10,6 +10,7 @@ import MaterialMockup from '@/components/MaterialMockup.jsx';
 import SEO from '@/components/SEO.jsx';
 import { trackViewItem } from '@/lib/analytics.js';
 import { baseGraph, breadcrumbSchema, productSchema, truncateText, webPageSchema } from '@/lib/seo.js';
+import { photoCopy } from '@/data/keywordCopy.js';
 
 const API_BASE = 'https://api.greatwildlifephotos.com';
 
@@ -339,7 +340,11 @@ const embeddedPhotoData = (slug) => {
   const categoryPath = '/gallery?category=' + encodeURIComponent(photo.category || '');
   const canonicalPath = `/photo/${photo.slug}`;
   const photoImage = photo.r2_url || photo.photo_url;
-  const photoDescription = truncateText(photo.description || `Premium ${photo.category} wildlife photography print by Lynn Starnes, available on canvas, metal, and acrylic.`, 155);
+  // Search copy (TSK-2026-2478): the approved title, description, alt and opening line where set. The opening
+  // line is shown above Lynn's caption; her caption (photo.description) is never edited.
+  const copy = photoCopy(photo.slug);
+  const photoTitleTag = copy.title || `${photo.title} - Great Wildlife Photos`;
+  const photoDescription = truncateText(copy.description || photo.description || `Premium ${photo.category} wildlife photography print by Lynn Starnes, available on canvas, metal, and acrylic.`, 155);
   const offerPrices = Object.values(variants || {})
     .flatMap(material => material?.sizes || [])
     .map(size => getFinalPrice(size));
@@ -362,7 +367,7 @@ const embeddedPhotoData = (slug) => {
     return (
       <>
         <SEO
-          title={`${photo.title} - Great Wildlife Photos`}
+          title={photoTitleTag}
           description={photoDescription}
           path={canonicalPath}
           image={photoImage}
@@ -395,7 +400,7 @@ const embeddedPhotoData = (slug) => {
                 <div className="relative overflow-hidden shadow-xl" style={{ height: '520px', objectFit: 'cover', borderRadius: '16px' }}>
                   <img
                     src={photo?.r2_url || photo?.photo_url}
-                    alt={`${photo?.title} - Fine art wildlife photography print by Lynn Starnes`}
+                    alt={copy.alt || `${photo?.title} - Fine art wildlife photography print by Lynn Starnes`}
                     className="w-full h-full object-cover"
                     fetchpriority="high"
                     width={photo?.width || undefined}
@@ -410,10 +415,11 @@ const embeddedPhotoData = (slug) => {
                   </Link>
                   <h1 className="text-4xl font-bold mb-4">{photo.title}</h1>
                 </div>
-                {photo.description && (
+                {(copy.lead || photo.description) && (
                   <div>
                     <h2 className="text-lg font-semibold mb-2">Description</h2>
-                    <p className="text-muted-foreground leading-relaxed">{photo.description}</p>
+                    {copy.lead && <p className="text-muted-foreground leading-relaxed mb-3">{copy.lead}</p>}
+                    {photo.description && <p className="text-muted-foreground leading-relaxed">{photo.description}</p>}
                   </div>
                 )}
                 <div className="rounded-lg p-6 text-center" style={{ border: '1px solid rgba(255,255,255,0.12)', background: 'rgba(255,255,255,0.06)' }}>
@@ -433,7 +439,7 @@ const embeddedPhotoData = (slug) => {
   return (
     <>
       <SEO
-        title={`${photo.title} - Great Wildlife Photos`}
+        title={photoTitleTag}
         description={photoDescription}
         path={canonicalPath}
         image={photoImage}
@@ -496,7 +502,7 @@ const embeddedPhotoData = (slug) => {
               >
                 <img
                   src={photo?.r2_url || photo?.photo_url}
-                  alt={`${photo?.title} - Fine art wildlife photography print on canvas, metal, or acrylic by Lynn Starnes`}
+                  alt={copy.alt || `${photo?.title} - Fine art wildlife photography print on canvas, metal, or acrylic by Lynn Starnes`}
                   className="w-full h-full object-cover"
                   fetchpriority="high"
                   width={photo?.width || undefined}
@@ -610,10 +616,11 @@ const embeddedPhotoData = (slug) => {
                 <MaterialMockup material={selectedMaterial} imageUrl={photo?.r2_url || photo?.photo_url} variant={selectedVariant} />
               </div>
 
-              {photo.description && (
+              {(copy.lead || photo.description) && (
                 <div className="pt-6 border-t border-border">
                   <h2 className="text-lg font-semibold mb-2">Description</h2>
-                  <p className="text-muted-foreground leading-relaxed">{photo.description}</p>
+                  {copy.lead && <p className="text-muted-foreground leading-relaxed mb-3">{copy.lead}</p>}
+                  {photo.description && <p className="text-muted-foreground leading-relaxed">{photo.description}</p>}
                 </div>
               )}
 

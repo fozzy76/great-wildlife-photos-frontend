@@ -39,6 +39,9 @@ const collectionsMod = await import(toUrl(path.join(webRoot, 'src/data/collectio
 const COLLECTIONS = collectionsMod.COLLECTIONS || collectionsMod.default;
 const policiesMod = await import(toUrl(path.join(webRoot, 'src/data/policies.js')));
 const { shippingPolicy, returnsPolicy, licensePolicy } = policiesMod;
+// Search copy (TSK-2026-2478): the same module the React pages read, so both views carry the same
+// title, description, H1, opening line and alt text.
+const { pageCopy, photoCopy } = await import(toUrl(path.join(webRoot, 'src/data/keywordCopy.js')));
 
 const {
   absoluteUrl, truncateText, baseGraph, webPageSchema, breadcrumbSchema,
@@ -276,7 +279,8 @@ function photoBody(photo, offerPrices, canonicalPath, priceTable = [], allProduc
       </nav>
       <h1>${esc(photo.title)}</h1>
       ${photo.category ? `<p><strong>Collection:</strong> ${esc(photo.category)}</p>` : ''}
-      ${img ? `<img src="${esc(img)}" alt="${esc(photo.title)} — wildlife photography print by Lynn Starnes" fetchpriority="high"${photo.width ? ` width="${photo.width}"` : ''}${photo.height ? ` height="${photo.height}"` : ''} />` : ''}
+      ${img ? `<img src="${esc(img)}" alt="${esc(photoCopy(photo.slug).alt || `${photo.title} — wildlife photography print by Lynn Starnes`)}" fetchpriority="high"${photo.width ? ` width="${photo.width}"` : ''}${photo.height ? ` height="${photo.height}"` : ''} />` : ''}
+      ${photoCopy(photo.slug).lead ? `<p>${esc(photoCopy(photo.slug).lead)}</p>` : ''}
       ${photo.description ? `<p>${esc(photo.description)}</p>` : ''}
       ${lo !== null ? `<p><strong>Fine art prints from ${money(lo)}${hi && hi > lo ? ` to ${money(hi)}` : ''}</strong> — available on canvas, acrylic and aluminium.</p>` : ''}
       <p>Photographed by Lynn Starnes. Every print is produced to order on museum-quality materials.</p>
@@ -303,7 +307,7 @@ function galleryBody(products) {
   const cats = [...new Set(products.map((p) => p.category).filter(Boolean))];
   return bodyBlock(`
     <main>
-      <h1>Wildlife Photography Print Gallery</h1>
+      <h1>${esc(pageCopy('/gallery').h1 || 'Photo gallery')}</h1>
       <p>${products.length} fine art wildlife and landscape photographs by Lynn Starnes, available as
       canvas, acrylic and aluminium prints.</p>
       ${cats.length ? `<h2>Collections</h2>\n      <ul>\n        ${cats.map((c) => {
@@ -332,7 +336,8 @@ function collectionBody(collection, items) {
     .map((c) => `<li><a href="/gallery/${esc(c.slug)}/">${esc(c.name)}</a></li>`).join('\n        ');
   return bodyBlock(`
     <main>
-      <h1>${esc(collection.name)} Photography Prints</h1>
+      <h1>${esc(pageCopy(`/gallery/${collection.slug}`).h1 || `${collection.name} Photography Prints`)}</h1>
+      ${pageCopy(`/gallery/${collection.slug}`).lead ? `<p>${esc(pageCopy(`/gallery/${collection.slug}`).lead)}</p>` : ''}
       <p>${esc(collection.intro)}</p>
       <p>${items.length} photograph${items.length === 1 ? '' : 's'} in this collection, available as
       canvas, acrylic and aluminium prints.</p>
@@ -357,9 +362,9 @@ function articleBody(post, path) {
   return bodyBlock(`
     <article>
       <nav aria-label="Breadcrumb"><a href="/">Home</a> &rsaquo; <a href="/blog/">Blog</a></nav>
-      <h1>${esc(post.title)}</h1>
+      <h1>${esc(pageCopy(path).h1 || post.title)}</h1>
       ${post.date ? `<p><time>${esc(post.date)}</time></p>` : ''}
-      ${post.image ? `<img src="${esc(post.image)}" alt="${esc(post.title)}" />` : ''}
+      ${(post.image || post.coverImage) ? `<img src="${esc(post.image || post.coverImage)}" alt="${esc(pageCopy(path).alt || post.title)}" />` : ''}
       ${html}
     </article>
   `);
@@ -403,7 +408,7 @@ function faqBodyHtml() {
 function blogIndexBodyHtml() {
   return bodyBlock(`
     <main>
-      <h1>Field Notes &amp; Print Guides</h1>
+      <h1>${esc(pageCopy('/blog').h1 || 'From the Field')}</h1>
       <p>Writing on wildlife photography, print materials and the animals Lynn photographs.</p>
       <ul>
         ${blogPosts.map((post) => `<li><a href="/blog/${esc(post.slug)}/">${esc(post.title)}</a>${post.excerpt ? ` &mdash; ${esc(String(post.excerpt).slice(0, 160))}` : ''}</li>`).join(' ')}
@@ -427,7 +432,8 @@ function homeBodyHtml(products = []) {
     : '';
   return bodyBlock(`
     <main>
-      <h1>${esc(m.title || 'Great Wildlife Photos')}</h1>
+      <h1>${esc(pageCopy('/').h1 || 'Where the Wild Meets the Wall')}</h1>
+      ${pageCopy('/').lead ? `<p>${esc(pageCopy('/').lead)}</p>` : ''}
       <p>${esc(m.description || '')}</p>
       <p>Award-winning North American wildlife and landscape photography by Lynn Starnes,
       available as museum-quality canvas, acrylic and aluminium prints. Lynn spent thirty-eight
@@ -457,7 +463,7 @@ function contactBodyHtml() {
   const m = STATIC_ROUTES['/contact'] || {};
   return bodyBlock(`
     <main>
-      <h1>${esc(m.title || 'Contact')}</h1>
+      <h1>Get in Touch</h1>
       <p>${esc(m.description || '')}</p>
       <h2>Send us a message</h2>
       <p>Questions about a print, a size that is not listed, or an order already placed &mdash;
@@ -482,7 +488,7 @@ function policyBody(policy) {
     .join('\n      ');
   return bodyBlock(`
     <main>
-      <h1>${esc(policy.heading)}</h1>
+      <h1>${esc(pageCopy(`/${policy.slug}`).h1 || policy.heading)}</h1>
       <p>${esc(policy.intro)}</p>
       ${secs}
     </main>
@@ -663,8 +669,8 @@ async function main() {
     }
     const cp = `/gallery/${collection.slug}`;
     const meta = {
-      title: collection.title,
-      description: collection.description,
+      title: pageCopy(cp).title || collection.title,
+      description: pageCopy(cp).description || collection.description,
       path: cp,
       image: DEFAULT_SEO_IMAGE,
       type: 'website',
@@ -674,7 +680,7 @@ async function main() {
     };
     const graph = [
       ...baseGraph(),
-      webPageSchema({ path: cp, name: collection.title, description: collection.description, type: 'CollectionPage', image: DEFAULT_SEO_IMAGE }),
+      webPageSchema({ path: cp, name: meta.title, description: meta.description, type: 'CollectionPage', image: DEFAULT_SEO_IMAGE }),
       breadcrumbSchema([
         { name: 'Home', path: '/' },
         { name: 'Gallery', path: '/gallery' },

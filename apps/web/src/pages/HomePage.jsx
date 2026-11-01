@@ -8,6 +8,7 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import SEO from '@/components/SEO.jsx';
 import { DEFAULT_SEO_IMAGE, baseGraph, breadcrumbSchema, webPageSchema } from '@/lib/seo.js';
 import { STATIC_ROUTES } from '@/lib/routeMeta.js';
+import { pageCopy, photoCopy } from '@/data/keywordCopy.js';
 
 const API_BASE = 'https://api.greatwildlifephotos.com';
 
@@ -79,8 +80,11 @@ const HomePage = () => {
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-5xl md:text-6xl lg:text-7xl font-bold text-white mb-6" style={{ letterSpacing: '-0.02em' }}>
-              Where the Wild Meets the Wall
+              {pageCopy('/').h1 || 'Where the Wild Meets the Wall'}
             </h1>
+            {pageCopy('/').lead && (
+              <p className="text-xl md:text-2xl text-gray-200 mb-4 max-w-2xl mx-auto leading-relaxed">{pageCopy('/').lead}</p>
+            )}
             <p className="text-xl md:text-2xl text-gray-200 mb-8 max-w-2xl mx-auto leading-relaxed">
               Award-winning wildlife photography by Lynn Starnes. Printed on premium canvas, metal, and acrylic - North American wildlife captured in its most breathtaking moments.
             </p>
@@ -139,7 +143,7 @@ const HomePage = () => {
                     <div style={{ position: 'relative', height: '320px', overflow: 'hidden' }}>
                       <img
                         src={photo.r2_url || photo.photo_url}
-                        alt={`${photo.title} - Fine art wildlife photography print by Lynn Starnes`}
+                        alt={photoCopy(photo.slug).alt || `${photo.title} - Fine art wildlife photography print by Lynn Starnes`}
                         style={{ width: '100%', height: '100%', objectFit: 'cover', transition: 'transform 0.4s ease' }}
                         className="group-hover:scale-105"
                         onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1564760055775-d63b17a55c44'; }}
@@ -180,7 +184,7 @@ const HomePage = () => {
                         <div className="relative h-56 overflow-hidden">
                           <img
                             src={photo.r2_url || photo.photo_url}
-                            alt={`${photo.title} - Fine art wildlife photography print by Lynn Starnes`}
+                            alt={photoCopy(photo.slug).alt || `${photo.title} - Fine art wildlife photography print by Lynn Starnes`}
                             className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                             onError={(e) => { e.target.src = 'https://images.unsplash.com/photo-1564760055775-d63b17a55c44'; }}
                           />
