@@ -14,6 +14,21 @@ const OrderConfirmationPage = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let stopped = false;
+    // Tracking only: the webhook saves the order after the Stripe, print-file and MerchOne calls, which can take
+    // longer than the retries below. Keep asking, slowly, so that order still sends its purchase event once saved.
+    const followUpPurchase = (attempt) => {
+      if (stopped || attempt >= 8) return;
+      setTimeout(async () => {
+        if (stopped) return;
+        try {
+          const response = await fetch('https://api.greatwildlifephotos.com/checkout/orders/' + paymentIntentId);
+          if (response.status === 200 && trackPurchase(await response.json())) return;
+        } catch (error) { /* network error: try again below */ }
+        followUpPurchase(attempt + 1);
+      }, 15000);
+    };
+
     const fetchOrder = async (retryCount = 0) => {
       if (!paymentIntentId) {
         setLoading(false);
@@ -40,7 +55,8 @@ const OrderConfirmationPage = () => {
         const data = await response.json();
         setOrder(data);
         setOrderItems(data.items || []);
-        trackPurchase(data);
+        // purchase only for a saved order (200 with its line items); a 202 after the retries above is not an order
+        if (!(response.status === 200 && trackPurchase(data))) followUpPurchase(0);
         setLoading(false);
       } catch (error) {
         console.error('Failed to fetch order:', error);
@@ -49,6 +65,7 @@ const OrderConfirmationPage = () => {
     };
 
     fetchOrder();
+    return () => { stopped = true; };
   }, [paymentIntentId]);
 
   if (loading) {

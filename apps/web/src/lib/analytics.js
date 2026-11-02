@@ -92,27 +92,38 @@ export function trackAddPaymentInfo(items, value) {
   });
 }
 
+function storageGet(storage, key) {
+  try { return typeof window !== 'undefined' && window[storage] ? window[storage].getItem(key) : null; } catch { return null; }
+}
+
+function storageSet(storage, key) {
+  try { if (typeof window !== 'undefined' && window[storage]) window[storage].setItem(key, '1'); } catch { /* storage blocked */ }
+}
+
+// Sent only for an order row the backend returned (GET /checkout/orders/:paymentIntentId answers 200 only once the
+// Stripe webhook has saved the paid order). One purchase per order on this browser: localStorage spans tabs, reloads
+// and the back button; the sessionStorage key is the one used before, kept so orders already sent are not re-sent.
 export function trackPurchase(order) {
-  if (!order) return;
+  if (!order || !Array.isArray(order.items) || order.items.length === 0) return false;
   const transactionId = String(order.orderNumber || order.id || '');
-  if (!transactionId) return;
+  if (!transactionId) return false;
 
   const storageKey = `gwp_purchase_tracked_${transactionId}`;
-  if (typeof sessionStorage !== 'undefined' && sessionStorage.getItem(storageKey)) {
-    return;
+  if (storageGet('localStorage', storageKey) || storageGet('sessionStorage', storageKey)) {
+    return true;
   }
+  if (!canTrack()) return false;
+  storageSet('localStorage', storageKey);
+  storageSet('sessionStorage', storageKey);
 
   event('purchase', {
     transaction_id: transactionId,
     affiliation: 'Great Wildlife Photos',
     currency: 'USD',
     value: money(order.total),
-    items: ecommerceItems(order.items || [])
+    items: ecommerceItems(order.items)
   });
-
-  if (typeof sessionStorage !== 'undefined') {
-    sessionStorage.setItem(storageKey, '1');
-  }
+  return true;
 }
 
 export function trackNewsletterSignup() {
