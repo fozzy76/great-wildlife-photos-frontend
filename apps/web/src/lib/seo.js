@@ -111,9 +111,16 @@ export const organizationSchema = () => ({
   url: `${SITE_URL}/`,
   logo: 'https://images.greatwildlifephotos.com/branding/gwp-logo.png',
   email: 'lynn@greatwildlifephotos.com',
+  // TSK-2026-2509 (AI playbook 3.3): the business's own profiles, so engines tie them to this one @id.
+  // Facebook Page only until the owner confirms the Google listing and Instagram (OWNER-STEPS O1, O5).
+  sameAs: [
+    'https://www.facebook.com/GreatWildlifePhoto'
+  ],
   founder: {
     '@type': 'Person',
-    name: 'Lynn Starnes'
+    name: 'Lynn Starnes',
+    // As shown on /about (src/data/aboutContent.js): B.S. Zoology and M.S. Aquatic Ecology.
+    alumniOf: { '@type': 'CollegeOrUniversity', name: 'University of Tennessee' }
   },
   hasMerchantReturnPolicy: returnPolicySchema(),
   hasShippingService: shippingServiceSchema()
