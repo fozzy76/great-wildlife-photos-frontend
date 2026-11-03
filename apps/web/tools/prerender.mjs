@@ -341,6 +341,9 @@ function collectionBody(collection, items) {
       <p>${esc(collection.intro)}</p>
       <p>${items.length} photograph${items.length === 1 ? '' : 's'} in this collection, available as
       canvas, acrylic and aluminium prints.</p>
+      ${(collection.faqs || []).length ? `<h2>Questions about these prints</h2>
+      ${collection.faqs.map((it) => `<h3>${esc(it.question)}</h3>
+      <p>${esc(it.answer)}</p>`).join(' ')}` : ''}
       <h2>Photographs in this collection</h2>
       <ul>
         ${links}

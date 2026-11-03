@@ -54,6 +54,17 @@ export const COLLECTIONS = [
     author: 'lynn',
     intro:
       'I have the most fun trying to get picturesque bull elk just before and during the rut. The challenge for me is finding or calling in a bull without one or more cows. The cows pay more attention to their surroundings! My best luck is capturing one animal or a herd heading out of brush/cover to a water hole. The most desirable photograph is when I catch them on a ridge or ridgeline. Then the wait begins to see if there is going to be something dramatic with clouds or a sunset or rarely a storm (I live in the high desert region).',
+    // TSK-2026-2509 (AI playbook R1): buyer questions answered from Lynn's own published wording.
+    faqs: [
+      {
+        question: "Are these elk photographed in the wild?",
+        answer: "Yes. Lynn Starnes photographed these bull elk in Nevada: some bugling in snow, one that stopped on its way to water to answer her own bugle. In Jarbidge she knows a stand of trees that holds 20 or 30 elk, of which she can find 8."
+      },
+      {
+        question: "Which material suits an elk print?",
+        answer: "Every elk photograph comes on canvas, metal or acrylic. Canvas has the warm, classic gallery look; metal gives high contrast for a bull against snow; acrylic gives vivid color with a glass-like depth. All three ship within the United States and Canada through MerchOne."
+      }
+    ],
   },
   {
     slug: 'lake-tahoe',

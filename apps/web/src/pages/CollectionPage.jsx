@@ -92,6 +92,18 @@ export default function CollectionPage() {
           {collection.intro}
         </p>
 
+        {(collection.faqs || []).length > 0 && (
+          <section className="mt-8 max-w-3xl">
+            <h2 className="text-xl font-semibold">Questions about these prints</h2>
+            {collection.faqs.map((it) => (
+              <div key={it.question} className="mt-4">
+                <h3 className="font-medium">{it.question}</h3>
+                <p className="mt-1 text-base leading-relaxed text-muted-foreground">{it.answer}</p>
+              </div>
+            ))}
+          </section>
+        )}
+
         <p className="mt-4 text-sm text-muted-foreground">
           {loading ? 'Loading photographs…' : `${photos.length} photograph${photos.length === 1 ? '' : 's'} in this collection.`}
         </p>

@@ -4,6 +4,23 @@
 
 export const faqSections = [
   {
+    title: "The Photographs & the Photographer",
+    items: [
+      {
+        question: "Who takes the photographs?",
+        answer: "Lynn Starnes takes the photographs in the store. She worked thirty-eight years as a fish and wildlife biologist, twenty-two of them with the U.S. Fish and Wildlife Service, and holds a B.S. in Zoology and an M.S. in Aquatic Ecology from the University of Tennessee. She works from a camouflaged blind behind a long lens."
+      },
+      {
+        question: "Where were the photographs taken?",
+        answer: "Across North America, from the Arctic to the ridgelines of the Sierra Nevada. The black bears were fishing for kokanee salmon at Taylor Creek in South Lake Tahoe. The red stallion leaping into Washoe Lake was photographed from a kayak. The bull elk were bugling in Nevada snow, and one stand of trees in Jarbidge holds 20 or 30 elk, of which she can find 8."
+      },
+      {
+        question: "Can I buy a wolf, elk or black bear print on metal or canvas?",
+        answer: "Yes. Each of the 161 photographs can be ordered on canvas, metal or acrylic. The wolf, coyote and fox collection has 21 photographs, elk 20 and bears 15. Prints ship within the United States and Canada through MerchOne, and most orders are produced and shipped within 5-7 business days. For an order outside those two countries, write to Lynn at lynn@greatwildlifephotos.com; she reads every message herself."
+      }
+    ]
+  },
+  {
     title: "Print Quality & Materials",
     items: [
       {
