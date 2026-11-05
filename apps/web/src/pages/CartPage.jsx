@@ -155,7 +155,7 @@ const CartPage = () => {
                   <Printer size={22} color="rgb(234,179,8)" />
                 </div>
                 <h4 style={{ color: 'white', fontWeight: 600, marginBottom: '8px' }}>Museum-quality printing</h4>
-                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', lineHeight: '1.6' }}>Every print is produced on premium canvas, metal, or acrylic by MerchOne, a professional fine art print fulfillment partner.</p>
+                <p style={{ color: 'rgba(255,255,255,0.5)', fontSize: '13px', lineHeight: '1.6' }}>Every print is produced on premium canvas, metal, or acrylic by a professional fine art print fulfillment partner.</p>
               </div>
               <div style={{ textAlign: 'center', padding: '20px' }}>
                 <div style={{ width: '48px', height: '48px', borderRadius: '50%', background: 'rgba(var(--primary-rgb, 234,179,8),0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px' }}>

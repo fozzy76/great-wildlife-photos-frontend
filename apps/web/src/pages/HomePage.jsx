@@ -226,7 +226,7 @@ const HomePage = () => {
               </div>
               <h3 className="text-2xl font-semibold mb-4 text-white">Professional quality</h3>
               <p className="text-gray-400 leading-relaxed">
-                Lynn Starnes has spent decades in the field capturing North American wildlife - Black Bears, Wild Horses, Mule Deer, Bighorn Sheep, Elk, and the stunning Lake Tahoe region. Her polar bear images were named Top 25 in Nature's Best Photography by the Smithsonian Institution in 2018. Every print is produced on museum-quality materials and fulfilled by MerchOne.
+                Lynn Starnes has spent decades in the field capturing North American wildlife - Black Bears, Wild Horses, Mule Deer, Bighorn Sheep, Elk, and the stunning Lake Tahoe region. Her polar bear images were named Top 25 in Nature's Best Photography by the Smithsonian Institution in 2018. Every print is produced on museum-quality materials and fulfilled by a professional fine art print partner.
               </p>
             </motion.div>
 
@@ -246,7 +246,7 @@ const HomePage = () => {
               </div>
               <h3 className="text-2xl font-semibold mb-4 text-white">Fast, secure shipping</h3>
               <p className="text-gray-400 leading-relaxed">
-                Every order is printed to order and shipped with care. US and Canada orders ship directly through MerchOne. International customers - contact Lynn directly for fulfillment options.
+                Every order is printed to order and shipped with care. US and Canada orders ship directly from our print partner. International customers - contact Lynn directly for fulfillment options.
               </p>
             </motion.div>
           </div>

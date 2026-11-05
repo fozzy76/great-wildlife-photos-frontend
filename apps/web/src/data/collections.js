@@ -62,7 +62,7 @@ export const COLLECTIONS = [
       },
       {
         question: "Which material suits an elk print?",
-        answer: "Every elk photograph comes on canvas, metal or acrylic. Canvas has the warm, classic gallery look; metal gives high contrast for a bull against snow; acrylic gives vivid color with a glass-like depth. All three ship within the United States and Canada through MerchOne."
+        answer: "Every elk photograph comes on canvas, metal or acrylic. Canvas has the warm, classic gallery look; metal gives high contrast for a bull against snow; acrylic gives vivid color with a glass-like depth. All three ship within the United States and Canada."
       }
     ],
   },

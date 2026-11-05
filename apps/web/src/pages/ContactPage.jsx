@@ -84,7 +84,7 @@ const ContactPage = () => {
               </CardHeader>
               <CardContent>
                 <p className="text-muted-foreground leading-relaxed">
-                  Lynn ships within the US and Canada through MerchOne. For international orders - particularly to Europe - please contact Lynn directly. She works with a UK-based print partner to source orders internationally and avoid excessive tariffs, ensuring you receive a quality print at a fair price.
+                  Lynn ships within the US and Canada. For international orders - particularly to Europe - please contact Lynn directly. She works with a UK-based print partner to source orders internationally and avoid excessive tariffs, ensuring you receive a quality print at a fair price.
                 </p>
               </CardContent>
             </Card>

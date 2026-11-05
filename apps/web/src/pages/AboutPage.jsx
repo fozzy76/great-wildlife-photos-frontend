@@ -114,7 +114,7 @@ const AboutPage = () => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-12 text-muted-foreground leading-relaxed">
                 <div className="space-y-6">
                   <p>
-                    Every photograph is custom-produced on-demand to ensure the highest quality for your space. We have partnered with MerchOne for our production and fulfillment, utilizing museum-quality materials designed to resist fading and last for generations.
+                    Every photograph is custom-produced on-demand to ensure the highest quality for your space. A professional fine art print partner handles our production and fulfillment, utilizing museum-quality materials designed to resist fading and last for generations.
                   </p>
                   <p>
                     Our fine art pieces are exclusively available on premium substrates, including striking acrylic, sleek aluminum metal, and classic gallery-wrapped canvas. Because we operate on an on-demand production model, each piece is individually crafted with uncompromising attention to detail the moment you place your order.

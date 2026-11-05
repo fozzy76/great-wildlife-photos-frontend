@@ -2,7 +2,7 @@
 
 > Great Wildlife Photos — award-winning North American wildlife photography prints by Lynn Starnes, available on premium canvas, metal, and acrylic.
 
-Great Wildlife Photos is an online fine-art wildlife photography print shop founded and operated by photographer Lynn Starnes. Lynn is a career wildlife biologist — B.S. Zoology and M.S. Aquatic Ecology (University of Tennessee), an aquatic ecologist with the U.S. Fish and Wildlife Service from 1984 to 2006 — who photographs the animals she spent a career studying. The collection features North American wildlife captured in the wild, offered as premium prints on canvas, metal, and acrylic. Lynn reads every message personally and responds within 1–2 business days. Prints ship within the US and Canada through MerchOne; international orders — particularly to Europe — are fulfilled through a UK-based print partner to avoid excessive tariffs.
+Great Wildlife Photos is an online fine-art wildlife photography print shop founded and operated by photographer Lynn Starnes. Lynn is a career wildlife biologist — B.S. Zoology and M.S. Aquatic Ecology (University of Tennessee), an aquatic ecologist with the U.S. Fish and Wildlife Service from 1984 to 2006 — who photographs the animals she spent a career studying. The collection features North American wildlife captured in the wild, offered as premium prints on canvas, metal, and acrylic. Lynn reads every message personally and responds within 1–2 business days. Prints ship within the US and Canada through a professional fine art print partner; international orders — particularly to Europe — are fulfilled through a UK-based print partner to avoid excessive tariffs.
 
 Contact: lynn@greatwildlifephotos.com (mailto). Custom requests, international orders, and licensing inquiries welcome via the contact page. Image CDN: images.greatwildlifephotos.com. API + sitemap: api.greatwildlifephotos.com.
 
@@ -38,7 +38,7 @@ Notable work: [Bear Looking Over Ice Flow](https://greatwildlifephotos.com/photo
 
 - Fine-art wildlife photography prints on canvas, metal, and acrylic.
 - Custom requests and image sourcing — Lynn is continually adding new images and returns to the field for specific animals, locations, or seasons.
-- International orders — US/Canada via MerchOne; Europe via a UK-based print partner.
+- International orders — US/Canada via our professional fine art print partner; Europe via a UK-based print partner.
 - Licensing inquiries.
 
 ## Optional

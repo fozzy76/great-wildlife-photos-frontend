@@ -48,7 +48,7 @@ export default function PrivacyPage() {
           <section>
             <h2 className="text-2xl font-semibold text-foreground mb-4">4. Information Sharing</h2>
             <p>
-              We may share your personal data with trusted third parties, including our printing and fulfillment partners (such as MerchOne), payment processors (such as Stripe), and IT service providers. We require all third parties to respect the security of your personal data and to treat it in accordance with the law. We do not allow our third-party service providers to use your personal data for their own purposes and only permit them to process your personal data for specified purposes and in accordance with our instructions.
+              We may share your personal data with trusted third parties, including our print and fulfillment partners, payment processors (such as Stripe), and IT service providers. We require all third parties to respect the security of your personal data and to treat it in accordance with the law. We do not allow our third-party service providers to use your personal data for their own purposes and only permit them to process your personal data for specified purposes and in accordance with our instructions.
             </p>
           </section>
 
