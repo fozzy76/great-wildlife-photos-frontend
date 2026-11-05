@@ -3,6 +3,9 @@ import { Link } from 'react-router-dom';
 import { Mail, Facebook, Instagram, Twitter } from 'lucide-react';
 import NewsletterSignup from '@/components/NewsletterSignup.jsx';
 
+// Social icons render only with a real profile URL; a "#" link goes nowhere, so it is not shown (TSK-2026-0230).
+const socialLinks = [['#', Facebook], ['#', Instagram], ['#', Twitter]].filter(([href]) => href && href !== '#');
+
 const Footer = () => {
   return (
     <footer className="bg-[#0a0a0a]" style={{ borderTop: '1px solid rgba(255,255,255,0.08)' }}>
@@ -72,8 +75,9 @@ const Footer = () => {
               <Link to="/shipping" style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px', textDecoration: 'none' }}>Shipping</Link>
               <Link to="/returns" style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px', textDecoration: 'none' }}>Returns &amp; Refunds</Link>
               <Link to="/license" style={{ color: 'rgba(255,255,255,0.3)', fontSize: '12px', textDecoration: 'none' }}>Image Licensing</Link>
+              {socialLinks.length > 0 && (
               <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginLeft: '8px' }}>
-                {[['#', Facebook], ['#', Instagram], ['#', Twitter]].map(([href, Icon], i) => (
+                {socialLinks.map(([href, Icon], i) => (
                   <a key={i} href={href} style={{ width: '32px', height: '32px', borderRadius: '50%', border: '1px solid rgba(255,255,255,0.12)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'rgba(255,255,255,0.4)', textDecoration: 'none', transition: 'all 0.2s' }}
                     onMouseEnter={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.4)'; e.currentTarget.style.color = 'white'; }}
                     onMouseLeave={e => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; e.currentTarget.style.color = 'rgba(255,255,255,0.4)'; }}>
@@ -81,6 +85,7 @@ const Footer = () => {
                   </a>
                 ))}
               </div>
+              )}
             </div>
           </div>
         </div>
