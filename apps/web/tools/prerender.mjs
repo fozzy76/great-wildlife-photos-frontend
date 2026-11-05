@@ -45,7 +45,7 @@ const { pageCopy, photoCopy } = await import(toUrl(path.join(webRoot, 'src/data/
 
 const {
   absoluteUrl, truncateText, baseGraph, webPageSchema, breadcrumbSchema,
-  articleSchema, productSchema, imageObjectSchema, SITE_NAME, DEFAULT_SEO_IMAGE,
+  articleSchema, productSchema, imageObjectSchema, faqSchema, SITE_NAME, DEFAULT_SEO_IMAGE,
 } = seo;
 const { STATIC_ROUTES, blogMeta, photoMeta, NOINDEX_ROUTES, NOINDEX_META } = routeMeta;
 
@@ -570,7 +570,11 @@ async function main() {
   for (const [p, meta] of Object.entries(STATIC_ROUTES)) {
     const graph = [
       ...baseGraph(),
-      webPageSchema({ path: meta.path, name: meta.title, description: meta.description, type: SCHEMA_TYPE[p] || 'WebPage', image: meta.image }),
+      {
+        ...webPageSchema({ path: meta.path, name: meta.title, description: meta.description, type: SCHEMA_TYPE[p] || 'WebPage', image: meta.image }),
+        // /faq: the one FAQPage node carries the questions shown on the page (TSK-2026-2509).
+        ...(p === '/faq' ? { mainEntity: faqSchema(faqMod.faqSections).mainEntity } : {}),
+      },
       breadcrumbSchema(BREADCRUMBS[p] || [{ name: 'Home', path: '/' }]),
     ];
     if (p === '/gallery') galleryDeferred = { p, meta, graph };

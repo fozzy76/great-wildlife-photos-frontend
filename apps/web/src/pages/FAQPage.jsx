@@ -46,14 +46,17 @@ const FAQPage = () => {
         {...STATIC_ROUTES['/faq']}
         schema={[
           ...baseGraph(),
-          webPageSchema({
-            path: '/faq',
-            name: 'Wildlife Print FAQ',
-            description: 'Answers about Great Wildlife Photos print materials, ordering, shipping, returns, and copyright.',
-            type: 'FAQPage',
-            image: DEFAULT_SEO_IMAGE
-          }),
-          faqSchema(faqSections),
+          {
+            ...webPageSchema({
+              path: '/faq',
+              name: 'Wildlife Print FAQ',
+              description: 'Answers about Great Wildlife Photos print materials, ordering, shipping, returns, and copyright.',
+              type: 'FAQPage',
+              image: DEFAULT_SEO_IMAGE
+            }),
+            // One FAQPage node: the questions go on the page node, not a second FAQPage (TSK-2026-2509).
+            mainEntity: faqSchema(faqSections).mainEntity
+          },
           breadcrumbSchema([
             { name: 'Home', path: '/' },
             { name: 'FAQ', path: '/faq' }
