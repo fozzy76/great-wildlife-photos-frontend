@@ -16,7 +16,7 @@ export const faqSections = [
       },
       {
         question: "Can I buy a wolf, elk or black bear print on metal or canvas?",
-        answer: "Yes. Each of the 161 photographs can be ordered on canvas, metal or acrylic. The wolf, coyote and fox collection has 21 photographs, elk 20 and bears 15. Prints ship within the United States and Canada through MerchOne, and most orders are produced and shipped within 5-7 business days. For an order outside those two countries, write to Lynn at lynn@greatwildlifephotos.com; she reads every message herself."
+        answer: "Yes. Each of the 161 photographs can be ordered on canvas, metal or acrylic. The wolf, coyote and fox collection has 21 photographs, elk 20 and bears 15. Prints ship within the United States and Canada, and most orders are produced and shipped within 5-7 business days. For an order outside those two countries, write to Lynn at lynn@greatwildlifephotos.com; she reads every message herself."
       }
     ]
   },
@@ -25,7 +25,7 @@ export const faqSections = [
     items: [
       {
         question: "What materials are available?",
-        answer: "Lynn offers three premium print substrates: Acrylic (vivid color, glass-like depth, modern look), Metal (high contrast, dramatic finish, ideal for bold wildlife images), and Canvas (warm, classic gallery feel). All materials are museum-quality and produced by MerchOne."
+        answer: "Lynn offers three premium print substrates: Acrylic (vivid color, glass-like depth, modern look), Metal (high contrast, dramatic finish, ideal for bold wildlife images), and Canvas (warm, classic gallery feel). All materials are museum-quality and produced by a professional fine art print partner."
       },
       {
         question: "Are the prints archival quality?",
@@ -67,7 +67,7 @@ export const faqSections = [
     items: [
       {
         question: "Where do you ship?",
-        answer: "We ship within the United States and Canada through MerchOne. For international orders, please contact Lynn directly at lynn@greatwildlifephotos.com - she works with a UK-based print partner for European and international fulfillment."
+        answer: "We ship within the United States and Canada. For international orders, please contact Lynn directly at lynn@greatwildlifephotos.com - she works with a UK-based print partner for European and international fulfillment."
       },
       {
         question: "How long does shipping take?",
